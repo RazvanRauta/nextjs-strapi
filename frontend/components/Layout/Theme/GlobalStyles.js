@@ -5,6 +5,7 @@
  */
 import React from 'react'
 import { Global, css } from '@emotion/core'
+import { rem } from 'polished'
 
 const GlobalStyles = ({ styles }) => (
   <>
@@ -13,6 +14,11 @@ const GlobalStyles = ({ styles }) => (
         ${styles}
         body {
           font-family: 'Open Sans', sans-serif;
+        }
+        .container {
+          max-width: ${rem(1380)};
+          width: 100%;
+          margin: 0 auto;
         }
       `}
     />

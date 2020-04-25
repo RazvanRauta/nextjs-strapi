@@ -4,7 +4,19 @@
  * Time: 20:13
  */
 
-const theme = {
+const breakpoints = {
+  mobile: 360,
+  tablet: 768,
+  iPad: 1024,
+  small: 1280,
+  medium: 1366,
+  large: 1440,
+  xl: 1536,
+}
+
+const mq = (n) => `@media screen and (min-width: ${breakpoints[n]}px)`
+
+export default {
   colors: {
     text: {
       primary: '#56646F',
@@ -33,6 +45,5 @@ const theme = {
       primary: `'Open Sans, sans-serif'`,
     },
   },
+  mq,
 }
-
-export default theme

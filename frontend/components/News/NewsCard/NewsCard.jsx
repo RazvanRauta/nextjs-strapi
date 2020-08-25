@@ -8,26 +8,28 @@ import React from 'react'
 import Moment from 'react-moment'
 import styled from '@emotion/styled'
 import { rem } from 'polished'
-import theme from '../Layout/Theme/Theme'
+import Link from 'next/link'
 
-const NewsPost = ({ newsPost }) => (
+const NewsCard = ({ newsPost }) => (
   <CardStyled>
-    <a className="post-preview" href="/">
-      <div className="picture">
-        <img
-          src={`${process.env.API_URL + newsPost.Image.formats.small.url}`}
-          className="featured-image"
-          alt={newsPost.Title}
-          title={newsPost.Title}
-        />
-      </div>
-      <div className="post-title-container">
-        <span className="post-meta">
-          <Moment format="MMM Do, YYYY">{newsPost.Date}</Moment>
-        </span>
-        <h3 className="title">{newsPost.Title}</h3>
-      </div>
-    </a>
+    <Link href={{ pathname: 'news/article', query: { id: newsPost.Slug } }}>
+      <a className="post-preview">
+        <div className="picture">
+          <img
+            src={`${process.env.API_URL + newsPost.Image.formats.small.url}`}
+            className="featured-image"
+            alt={newsPost.Title}
+            title={newsPost.Title}
+          />
+        </div>
+        <div className="post-title-container">
+          <span className="post-meta">
+            <Moment format="MMM Do, YYYY">{newsPost.Date}</Moment>
+          </span>
+          <h3 className="title">{newsPost.Title}</h3>
+        </div>
+      </a>
+    </Link>
   </CardStyled>
 )
 
@@ -85,4 +87,4 @@ const CardStyled = styled.div`
   }
 `
 
-export default NewsPost
+export default NewsCard

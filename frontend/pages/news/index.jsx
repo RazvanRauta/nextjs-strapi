@@ -5,33 +5,25 @@
  */
 
 import React from 'react'
-import fetch from 'isomorphic-unfetch'
 import styled from '@emotion/styled'
 import { rem } from 'polished'
-import NewsPost from '../../components/News/NewsPost'
-import theme from '../../components/Layout/Theme/Theme'
+import NEWS_POSTS_QUERY from 'apollo/queries/news-posts/news-posts'
+import theme from 'components/Layout/Theme/Theme'
+import Query from 'components/GraphQL/Query'
+import NewsCard from 'components/News/NewsCard/NewsCard'
 
-const Index = ({ news_posts }) => {
+const Index = () => {
   return (
     <NewsStyled>
       <div className="container news">
-        {news_posts.map((post) => (
-          <NewsPost newsPost={post} key={post.id} />
-        ))}
+        <Query query={NEWS_POSTS_QUERY}>
+          {({ data: { newsPosts } }) => {
+            return newsPosts.map((post) => <NewsCard newsPost={post} key={post.id} />)
+          }}
+        </Query>
       </div>
     </NewsStyled>
   )
-}
-
-export async function getServerSideProps() {
-  const { API_URL } = process.env
-  const res = await fetch(`${API_URL}/news-posts`)
-  const data = await res.json()
-  return {
-    props: {
-      news_posts: data,
-    },
-  }
 }
 
 const { mq } = theme

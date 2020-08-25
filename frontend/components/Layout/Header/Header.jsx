@@ -8,8 +8,8 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { rem } from 'polished'
 import { Flex, Box } from 'reflexbox'
-import Navigation from '../Navigation/Navigation'
 import Link from 'next/link'
+import Navigation from 'Layout/Navigation/Navigation'
 
 const Header = () => (
   <HeaderStyled>
@@ -18,7 +18,7 @@ const Header = () => (
         <div className="logo-container">
           <Link href="/">
             <a>
-              <img className="logo" src="/images/klika-tech-logo.svg" alt="Site logo" />
+              <img className="logo" src="/images/crown.svg" alt="Site logo" />
             </a>
           </Link>
         </div>

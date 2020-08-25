@@ -17,7 +17,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <title>Create Next App</title>
           <link rel="icon" href="/favicon.ico" />
           <link
             rel="preload"
@@ -25,6 +24,7 @@ class MyDocument extends Document {
             as="style"
             crossOrigin=""
           />
+          <script src="https://cdn.jsdelivr.net/npm/uikit@3.4.2/dist/js/uikit.min.js" />
         </Head>
         <body>
           <Main />

@@ -5,15 +5,21 @@
  */
 import React from 'react'
 import { Global, css } from '@emotion/core'
-import { rem } from 'polished'
+import { normalize, rem } from 'polished'
 
-const GlobalStyles = ({ styles }) => (
+const GlobalStyles = () => (
   <>
     <Global
       styles={css`
-        ${styles}
+        ${normalize()}
+        *,*::before, *::after {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
         body {
           font-family: 'Open Sans', sans-serif;
+          box-sizing: border-box;
         }
         .container {
           max-width: ${rem(1380)};

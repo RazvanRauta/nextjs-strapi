@@ -17,6 +17,11 @@ const Navigation = () => {
     <NavigationStyled>
       <ul>
         <li>
+          <Link href="/udemy">
+            <a className={router.pathname === '/udemy' ? 'active' : ''}>CSS</a>
+          </Link>
+        </li>
+        <li>
           <Link href="/about">
             <a className={router.pathname === '/about' ? 'active' : ''}>About</a>
           </Link>

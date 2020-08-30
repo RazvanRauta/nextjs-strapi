@@ -4,6 +4,7 @@
  * 23:54
  */
 
+import React from 'react'
 import { Image, keyframes, ImageProps } from '@chakra-ui/core'
 import logo from './logo.svg'
 

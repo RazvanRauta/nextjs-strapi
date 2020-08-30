@@ -24,6 +24,7 @@ export const Layout = ({
     <Head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      <title>{title}</title>
     </Head>
     <Container maxWidth="1200px">
       <header>

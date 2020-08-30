@@ -5,15 +5,11 @@
  */
 
 import React, { FunctionComponent } from 'react'
-import { Box, Text } from '@chakra-ui/core'
-import {
-  NewsPosts,
-  NewsPostsDocument,
-  useNewsPostsQuery,
-} from '../generated/graphql'
+import { Container } from '@chakra-ui/core'
+import { NewsPostsDocument, useNewsPostsQuery } from '../generated/graphql'
 import { Layout } from '@/components/Layout/Layout'
 import { initializeApollo } from '../utils/apollo'
-import { NormalizedCacheObject } from '@apollo/client'
+import NewsGrid from '@/components/NewsGrid/NewsGrid'
 
 interface OwnProps {}
 
@@ -29,11 +25,9 @@ const News: FunctionComponent<Props> = () => {
 
   return (
     <Layout title={'News'}>
-      <Box width={{ base: 1, sm: 1 / 2, md: 1 / 4 }}>
-        {data?.newsPosts?.map((post) => (
-          <Text key={post?.id}>{post?.Title}</Text>
-        ))}
-      </Box>
+      <Container maxW="xl" centerContent>
+        <NewsGrid newsPosts={data?.newsPosts} />
+      </Container>
     </Layout>
   )
 }

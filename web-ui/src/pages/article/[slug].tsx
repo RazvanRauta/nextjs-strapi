@@ -7,8 +7,11 @@
 import React, { FunctionComponent } from 'react'
 import { ArticleDocument, NewsPostsDocument } from '../../generated/graphql'
 import { initializeApollo } from '../../utils/apollo'
-import { Box, Image as CoreImage } from '@chakra-ui/core'
 import { useQuery } from '@apollo/client'
+import { Layout } from '@/components/Layout/Layout'
+import Article from '@/components/Article/Article'
+import { GetStaticPaths, GetStaticProps } from 'next'
+import { useRouter } from 'next/router'
 
 interface OwnProps {
   slug: string
@@ -16,35 +19,31 @@ interface OwnProps {
 
 type Props = OwnProps
 
-const Article: FunctionComponent<Props> = ({ slug }) => {
+const ArticlePage: FunctionComponent<Props> = ({ slug }) => {
   const { data, loading, error } = useQuery(ArticleDocument, {
     variables: { id: slug },
   })
-  if (loading) return <p>Loading</p>
+  const router = useRouter()
+
+  if (loading || router.isFallback) return <p>Loading</p>
 
   if (error) return <p>{error}</p>
 
-  const { Title, Image } = data?.newsPosts[0]
+  const { Title } = data?.newsPosts[0]
 
   return (
-    <Box>
-      <p>{Title}</p>
-      <CoreImage
-        loading={'lazy'}
-        src={`${process.env.ROOT_URL + Image?.formats.small.url}`}
-        srcSet={`${process.env.ROOT_URL + Image?.formats.small.url}`}
-      />
-    </Box>
+    <Layout title={Title}>
+      <Article {...data?.newsPosts[0]} />
+    </Layout>
   )
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const apolloClient = initializeApollo()
 
   const {
     data: { newsPosts },
     error,
-    loading,
   } = await apolloClient.query({
     query: NewsPostsDocument,
     variables: { limit: 100, start: 0 },
@@ -54,21 +53,19 @@ export async function getStaticPaths() {
     console.log('Error while getStaticPaths, ', error)
   }
 
-  if (!loading) {
-    return {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      paths: newsPosts.map(({ Slug }) => ({
-        params: { slug: Slug },
-      })),
-      fallback: true,
-    }
+  return {
+    // @ts-ignore
+    paths: newsPosts.map(({ Slug }) => ({
+      params: { slug: Slug },
+    })),
+    fallback: true,
   }
 }
 
-export async function getStaticProps(context: any) {
+export const getStaticProps: GetStaticProps = async (context) => {
   const apolloClient = initializeApollo()
   const { params } = context
+  // @ts-ignore
   const { slug } = params
 
   const allArticleVars = {
@@ -89,4 +86,4 @@ export async function getStaticProps(context: any) {
   }
 }
 
-export default Article
+export default ArticlePage

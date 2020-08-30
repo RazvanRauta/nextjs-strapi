@@ -3,31 +3,29 @@
  * Date: 26.04.2020
  * Time: 19:30
  */
-import styled from '@emotion/styled'
-
 import React from 'react'
+import styled from '@emotion/styled'
 import Head from 'next/head'
 import { rem } from 'polished'
-import { Button } from '@chakra-ui/core'
+import { Layout } from '@/components/Layout/Layout'
 
-const Udemy = () => (
-  <>
-    <Head>
-      <title>Css the best</title>
-    </Head>
-    <HeaderStyled>
-      <div className="header">
-        <TextBox>
-          <PrimaryHeader>
-            <span className={'heading-main'}>Outdoors</span>
-            <span className={'heading-sub'}>Is where life happens</span>
-          </PrimaryHeader>
-          <Button>Discover more</Button>
-        </TextBox>
-      </div>
-    </HeaderStyled>
-  </>
-)
+const Udemy = () => {
+  return (
+    <Layout title={'Udemy CSS'}>
+      <HeaderStyled>
+        <div className="header">
+          <TextBox>
+            <PrimaryHeader>
+              <span className={'heading-main'}>Outdoors</span>
+              <span className={'heading-sub'}>Is where life happens</span>
+            </PrimaryHeader>
+            <Button>Discover more</Button>
+          </TextBox>
+        </div>
+      </HeaderStyled>
+    </Layout>
+  )
+}
 
 const HeaderStyled = styled.div`
   padding: ${rem(30)};
@@ -107,64 +105,62 @@ const TextBox = styled.div`
   text-align: center;
 `
 
-// const Button = styled.a`
-//   color: ${(props) => };
-//   background-color: ${(props) =>
-//     props.bg ? props.bg : props.theme.colors.backgrounds.white};
-//   padding: ${rem(15)} ${rem(40)};
-//   display: inline-block;
-//   cursor: pointer;
-//   border-radius: ${rem(100)};
-//   transition: all 200ms;
-//   position: relative;
-//   animation: ${(props) => (props.animation ? props.animation : '')};
-//   animation-fill-mode: ${(props) => (props.fillMode ? props.fillMode : '')};
-//   text-transform: uppercase;
-//   font-weight: 400;
-//
-//   &:link,
-//   &:visited {
-//     text-transform: uppercase;
-//     text-decoration: none;
-//   }
-//   &:hover {
-//     transform: translateY(${rem(-3)});
-//     box-shadow: 0 ${rem(10)} ${rem(20)} rgba(0, 0, 0, 0.2);
-//     &::after {
-//       transform: scaleX(1.4) scaleY(1.6);
-//       opacity: 0;
-//     }
-//   }
-//   &:active {
-//     transform: translateY(${rem(-1)});
-//     box-shadow: 0 ${rem(5)} ${rem(10)} rgba(0, 0, 0, 0.2);
-//   }
-//   &::after {
-//     content: '';
-//     display: inline-block;
-//     height: 100%;
-//     width: 100%;
-//     border-radius: ${rem(100)};
-//     background-color: ${(props) =>
-//       props.bg ? props.bg : props.theme.colors.backgrounds.white};
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//     z-index: -1;
-//     transition: all 400ms;
-//   }
-//
-//   @keyframes moveInBottom {
-//     0% {
-//       opacity: 0;
-//       transform: translateY(${rem(30)});
-//     }
-//
-//     100% {
-//       opacity: 1;
-//       transform: translateY(${rem(0)});
-//     }
-//   }
-// `
+const Button = styled.a`
+  color: ${(props) => (props.color ? props.color : 'black')};
+  background-color: white;
+  padding: ${rem(15)} ${rem(40)};
+  display: inline-block;
+  cursor: pointer;
+  border-radius: ${rem(100)};
+  transition: all 200ms;
+  position: relative;
+  animation: moveInBottom 500ms ease-out 750ms;
+  animation-fill-mode: backwards;
+  text-transform: uppercase;
+  font-weight: 400;
+
+  &:link,
+  &:visited {
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  &:hover {
+    transform: translateY(${rem(-3)});
+    box-shadow: 0 ${rem(10)} ${rem(20)} rgba(0, 0, 0, 0.2);
+    &::after {
+      transform: scaleX(1.4) scaleY(1.6);
+      opacity: 0;
+    }
+  }
+  &:active {
+    transform: translateY(${rem(-1)});
+    box-shadow: 0 ${rem(5)} ${rem(10)} rgba(0, 0, 0, 0.2);
+  }
+  &::after {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    border-radius: ${rem(100)};
+    background-color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    transition: all 400ms;
+  }
+
+  @keyframes moveInBottom {
+    0% {
+      opacity: 0;
+      transform: translateY(${rem(30)});
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(${rem(0)});
+    }
+  }
+`
 
 export default Udemy

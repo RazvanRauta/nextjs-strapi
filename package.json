@@ -10,7 +10,7 @@
     "setup:yarn:backend": "cd backend && yarn",
     "setup:yarn:frontend": "cd frontend && yarn",
     "develop:yarn": "yarn npm-run-all -p develop:yarn:*",
-    "develop:yarn:backend": "cd backend && yarn develop",
+    "develop:yarn:backend": "cd backend && yarn develop:strapi",
     "develop:yarn:frontend": "cd frontend && yarn develop",
     "build:npm": "cd backend && npm run build",
     "build:yarn": "cd backend && yarn build"

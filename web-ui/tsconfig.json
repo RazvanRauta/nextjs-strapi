@@ -4,7 +4,11 @@
     "paths": {
       "@/components/*": ["src/components/*"],
       "@/public/*": ["src/public/*"],
-      "@/apollo/*": ["src/apollo/*"]
+      "@/generated/*": ["src/generated/*"],
+      "@/graphql/*": ["src/graphql/*"],
+      "@/layout/*": ["src/layout/*"],
+      "@/theme/*": ["src/theme/*"],
+      "@/utils/*": ["src/utils/*"]
     },
     "target": "es5",
     "lib": [

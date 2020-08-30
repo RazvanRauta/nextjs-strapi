@@ -7,7 +7,6 @@
 import React, { FunctionComponent } from 'react'
 import { Container } from '@chakra-ui/core'
 import { NewsPostsDocument, useNewsPostsQuery } from '../generated/graphql'
-import { Layout } from '@/components/Layout/Layout'
 import { initializeApollo } from '../utils/apollo'
 import NewsGrid from '@/components/NewsGrid/NewsGrid'
 
@@ -24,11 +23,9 @@ const News: FunctionComponent<Props> = () => {
   if (error) return <p>{error}</p>
 
   return (
-    <Layout title={'News'}>
-      <Container maxW="xl" centerContent>
-        <NewsGrid newsPosts={data?.newsPosts} />
-      </Container>
-    </Layout>
+    <Container maxW="xl" centerContent>
+      <NewsGrid newsPosts={data?.newsPosts} />
+    </Container>
   )
 }
 

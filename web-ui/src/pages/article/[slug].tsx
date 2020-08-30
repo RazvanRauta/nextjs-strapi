@@ -5,10 +5,9 @@
  */
 
 import React, { FunctionComponent } from 'react'
-import { ArticleDocument, NewsPostsDocument } from '../../generated/graphql'
-import { initializeApollo } from '../../utils/apollo'
+import { ArticleDocument, NewsPostsDocument } from '@/generated/graphql'
+import { initializeApollo } from '@/utils/apollo'
 import { useQuery } from '@apollo/client'
-import { Layout } from '@/components/Layout/Layout'
 import Article from '@/components/Article/Article'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
@@ -29,13 +28,7 @@ const ArticlePage: FunctionComponent<Props> = ({ slug }) => {
 
   if (error) return <p>{error}</p>
 
-  const { Title } = data?.newsPosts[0]
-
-  return (
-    <Layout title={Title}>
-      <Article {...data?.newsPosts[0]} />
-    </Layout>
-  )
+  return <Article {...data?.newsPosts[0]} />
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {

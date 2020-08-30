@@ -7,7 +7,7 @@
 import React, { FunctionComponent } from 'react'
 import { Maybe, Scalars, UploadFile } from '../../generated/graphql'
 import { Box, Image as ChakraImage, Heading } from '@chakra-ui/core'
-import { Link } from '@/components/Layout/NextLink'
+import { Link } from '@/layout/NextLink'
 
 interface OwnProps {
   Title?: Scalars['String'] | null

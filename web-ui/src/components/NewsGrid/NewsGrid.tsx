@@ -6,7 +6,7 @@
 
 import React, { FunctionComponent } from 'react'
 import { Grid } from '@chakra-ui/core'
-import { Maybe, NewsPosts, UploadFile } from '../../generated/graphql'
+import { Maybe, NewsPosts, UploadFile } from '@/generated/graphql'
 import NewsCard from '@/components/NewsCard/NewsCard'
 
 interface OwnProps {

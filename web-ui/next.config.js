@@ -4,16 +4,19 @@
  * 19:52
  */
 const path = require('path')
+const svgToMiniDataURI = require('mini-svg-data-uri')
+const withPWA = require('next-pwa')
+const runtimeCaching = require('next-pwa/cache')
 require('dotenv').config()
 
-module.exports = {
+module.exports = withPWA({
   env: {
     API_URL: process.env.API_URL,
     ROOT_URL: process.env.ROOT_URL,
   },
   webpack(config, options) {
     config.module.rules.push({
-      test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+      test: /\.(png|jpg|gif|eot|ttf|woff|woff2)$/,
       use: {
         loader: 'url-loader',
         options: {
@@ -21,9 +24,24 @@ module.exports = {
         },
       },
     })
+    config.module.rules.push({
+      test: /.svg$/i,
+      use: [
+        {
+          loader: 'url-loader',
+          options: {
+            generator: (content) => svgToMiniDataURI(content.toString()),
+          },
+        },
+      ],
+    })
     return config
   },
   devIndicators: {
     autoPrerender: false,
   },
-}
+  pwa: {
+    dest: 'public',
+    runtimeCaching,
+  },
+})

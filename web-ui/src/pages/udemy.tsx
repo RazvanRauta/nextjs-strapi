@@ -5,30 +5,26 @@
  */
 import React from 'react'
 import styled from '@emotion/styled'
-import Head from 'next/head'
 import { rem } from 'polished'
-import { Layout } from '@/components/Layout/Layout'
 
 const Udemy = () => {
   return (
-    <Layout title={'Udemy CSS'}>
-      <HeaderStyled>
-        <div className="header">
-          <TextBox>
-            <PrimaryHeader>
-              <span className={'heading-main'}>Outdoors</span>
-              <span className={'heading-sub'}>Is where life happens</span>
-            </PrimaryHeader>
-            <Button>Discover more</Button>
-          </TextBox>
-        </div>
-      </HeaderStyled>
-    </Layout>
+    <HeaderStyled>
+      <div className="header">
+        <TextBox>
+          <PrimaryHeader>
+            <span className={'heading-main'}>Outdoors</span>
+            <span className={'heading-sub'}>Is where life happens</span>
+          </PrimaryHeader>
+          <Button>Discover more</Button>
+        </TextBox>
+      </div>
+    </HeaderStyled>
   )
 }
 
 const HeaderStyled = styled.div`
-  padding: ${rem(30)};
+  padding: ${rem(30)} 0;
   .header {
     position: relative;
     height: 95vh;

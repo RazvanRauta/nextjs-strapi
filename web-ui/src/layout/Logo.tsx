@@ -6,7 +6,6 @@
 
 import React from 'react'
 import { Image, keyframes, ImageProps } from '@chakra-ui/core'
-import logo from './logo.svg'
 
 const spin = keyframes`
   from { transform: rotate(0deg); }
@@ -21,7 +20,7 @@ export const Logo = (props: ImageProps) => (
       },
     }}
     alt=""
-    src={logo}
+    src={'/apple-touch-icon.png'}
     {...props}
   />
 )

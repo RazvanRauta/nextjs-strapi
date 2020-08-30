@@ -1,8 +1,8 @@
-import theme from '@chakra-ui/theme'
+import theme, { Theme } from '@chakra-ui/theme'
 import { merge } from '@chakra-ui/utils'
 
 // 2. Extend the theme to include custom colors, fonts, etc.
-const webUiTheme = merge(theme, {
+const webUiTheme: Theme = merge(theme, {
   colors: {
     primary: '#56646F',
     secondary: '#2E83B9',

@@ -2,18 +2,18 @@
   "scripts": {
     "setup:npm": "npm install && npm-run-all -p setup:npm:*",
     "setup:npm:backend": "cd backend && npm install",
-    "setup:npm:frontend": "cd frontend && npm install",
+    "setup:npm:frontend": "cd web-ui && npm install",
     "develop:npm": "npm run npm-run-all -p develop:npm:*",
     "develop:npm:backend": "cd backend && npm run develop",
-    "develop:npm:frontend": "cd frontend && npm run develop",
+    "develop:npm:frontend": "cd web-ui && npm run develop",
     "setup:yarn": "yarn && npm-run-all -p setup:yarn:*",
     "setup:yarn:backend": "cd backend && yarn",
-    "setup:yarn:frontend": "cd frontend && yarn",
+    "setup:yarn:frontend": "cd web-ui && yarn",
     "develop:yarn": "yarn npm-run-all -p develop:yarn:*",
-    "develop:yarn:backend": "cd backend && yarn develop",
-    "develop:yarn:frontend": "cd frontend && yarn develop",
+    "develop:yarn:backend": "cd backend && yarn develop:strapi",
+    "develop:yarn:frontend": "cd web-ui && yarn develop",
     "build:npm": "cd backend && npm run build",
-    "build:yarn": "cd backend && yarn build"
+    "build:yarn": "cd web-ui && yarn build"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"

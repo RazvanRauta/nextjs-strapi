@@ -1,0 +1,14 @@
+query Article($id: String!) {
+    newsPosts(where: { Slug: $id }) {
+        id
+        Title
+        Slug
+        Text
+        Image {
+            formats
+            width
+            height
+        }
+        Date
+    }
+}

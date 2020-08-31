@@ -1,0 +1,14 @@
+query NewsPosts($limit: Int!, $start: Int!) {
+    newsPosts(limit: $limit, start: $start ) {
+        id
+        Slug
+        Title
+        Image {
+            width
+            height
+            formats
+        }
+        Date
+        Text
+    }
+}

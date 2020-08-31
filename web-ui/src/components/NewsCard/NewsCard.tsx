@@ -28,8 +28,9 @@ const NewsCard: FunctionComponent<Props> = ({ Title, Image, Slug }) => {
       <Box maxWidth={360} padding={10}>
         <ChakraImage
           loading={'lazy'}
-          src={`${process.env.ROOT_URL + Image?.formats.small.url}`}
-          srcSet={`${process.env.ROOT_URL + Image?.formats.small.url}`}
+          srcSet={`${Image?.formats.thumbnail.url} 1x,
+            ${Image?.formats.small.url} 1.5x,
+            ${Image?.formats.medium.url} 2x`}
         />
         <Heading>{Title}</Heading>
       </Box>

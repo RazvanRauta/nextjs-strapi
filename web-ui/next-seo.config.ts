@@ -7,16 +7,16 @@
 import { NextSeoProps } from 'next-seo'
 
 export const SEO: NextSeoProps = {
-  title: 'My Page',
-  description: 'Solution Company',
+  title: 'NextJS | RRazvan',
+  description: 'NextJS and Strapi App',
   openGraph: {
     type: 'website',
     locale: 'en_IE',
-    url: 'http://localhost:3000',
-    site_name: 'My Page',
+    url: process.env.ROOT_URL,
+    site_name: 'NextJS | RRazvan',
     images: [
       {
-        url: 'http://localhost:3000/meta/meta-image.png',
+        url: `${process.env.ROOT_URL}/meta/meta-image.png`,
         width: 1600,
         height: 1174,
         alt: 'Image',
@@ -24,8 +24,8 @@ export const SEO: NextSeoProps = {
     ],
   },
   twitter: {
-    handle: '@razvan',
-    site: '@razvan',
+    handle: '@Razvan_Rauta',
+    site: '@Razvan_Rauta',
     cardType: 'summary_large_image',
   },
 }

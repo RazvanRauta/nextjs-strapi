@@ -7,9 +7,10 @@
 import React, { FunctionComponent } from 'react'
 import {
   ArticleDocument,
+  Maybe,
   NewsPosts,
   NewsPostsDocument,
-  useArticleQuery,
+  UploadFile,
 } from '@/generated/graphql'
 import { initializeApollo } from '@/utils/apollo'
 import Article from '@/components/Article/Article'
@@ -17,17 +18,35 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 
 interface OwnProps {
-  slug: string
+  newsPosts?: Maybe<
+    Array<
+      Maybe<
+        { __typename?: 'NewsPosts' } & Pick<
+          NewsPosts,
+          'id' | 'Slug' | 'Title' | 'Date' | 'Text'
+        > & {
+            Image?: Maybe<
+              { __typename?: 'UploadFile' } & Pick<
+                UploadFile,
+                'width' | 'height' | 'formats'
+              >
+            >
+          }
+      >
+    >
+  >
+  error?: any
+  loading?: boolean
 }
 
 type Props = OwnProps
 
-const ArticlePage: FunctionComponent<Props> = () => {
+const ArticlePage: FunctionComponent<Props> = ({
+  newsPosts,
+  error,
+  loading,
+}) => {
   const router = useRouter()
-  const { data, loading, error } = useArticleQuery({
-    // @ts-ignore
-    variables: { id: router.query.slug },
-  })
 
   if (loading || router.isFallback) return <p>Loading</p>
 
@@ -36,7 +55,7 @@ const ArticlePage: FunctionComponent<Props> = () => {
     return <p>There was a error</p>
   }
 
-  return <Article {...data?.newsPosts?.[0]} />
+  return <Article {...newsPosts?.[0]} />
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -72,7 +91,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     id: slug,
   }
 
-  await apolloClient.query({
+  const { data, error, loading } = await apolloClient.query({
     query: ArticleDocument,
     variables: allArticleVars,
   })
@@ -80,6 +99,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       initialApolloState: apolloClient.cache.extract(),
+      newsPosts: data?.newsPosts,
+      error: error ?? null,
+      loading,
     },
     revalidate: 1,
   }

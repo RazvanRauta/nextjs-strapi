@@ -5,9 +5,13 @@
  */
 
 import React, { FunctionComponent } from 'react'
-import { ArticleDocument, NewsPostsDocument } from '@/generated/graphql'
+import {
+  ArticleDocument,
+  NewsPosts,
+  NewsPostsDocument,
+  useArticleQuery,
+} from '@/generated/graphql'
 import { initializeApollo } from '@/utils/apollo'
-import { useQuery } from '@apollo/client'
 import Article from '@/components/Article/Article'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
@@ -18,17 +22,21 @@ interface OwnProps {
 
 type Props = OwnProps
 
-const ArticlePage: FunctionComponent<Props> = ({ slug }) => {
-  const { data, loading, error } = useQuery(ArticleDocument, {
-    variables: { id: slug },
-  })
+const ArticlePage: FunctionComponent<Props> = () => {
   const router = useRouter()
+  const { data, loading, error } = useArticleQuery({
+    // @ts-ignore
+    variables: { id: router.query.slug },
+  })
 
   if (loading || router.isFallback) return <p>Loading</p>
 
-  if (error) return <p>{error}</p>
+  if (error) {
+    console.log(error)
+    return <p>There was a error</p>
+  }
 
-  return <Article {...data?.newsPosts[0]} />
+  return <Article {...data?.newsPosts?.[0]} />
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -47,8 +55,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 
   return {
-    // @ts-ignore
-    paths: newsPosts.map(({ Slug }) => ({
+    paths: newsPosts.map(({ Slug }: NewsPosts) => ({
       params: { slug: Slug },
     })),
     fallback: true,
@@ -73,7 +80,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       initialApolloState: apolloClient.cache.extract(),
-      slug,
     },
     revalidate: 1,
   }

@@ -10,7 +10,7 @@
       "@/theme/*": ["src/theme/*"],
       "@/utils/*": ["src/utils/*"]
     },
-    "target": "es5",
+    "target": "esnext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -24,6 +24,8 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve"
@@ -33,8 +35,5 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": [
-    "node_modules",
-    "utils/apollo.ts"
-  ]
+  "exclude": ["node_modules"]
 }

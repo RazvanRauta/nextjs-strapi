@@ -32,7 +32,7 @@ const Article: FunctionComponent<Props> = () => {
 
   if (error) return <Error statusCode={500} />
 
-  if (loading && typeof window !== 'undefined') return <Box>Loading</Box>
+  if (loading) return <Box>Loading</Box>
 
   // @ts-ignore
   const { newsPosts } = data

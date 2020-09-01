@@ -13,7 +13,7 @@ interface OwnProps {}
 
 type Props = OwnProps
 
-const NavBar: FunctionComponent<Props> = (props) => {
+const NavBar: FunctionComponent<Props> = () => {
   return (
     <header>
       <Flex py={4} justifyContent="space-between" alignItems="center" mb={8}>

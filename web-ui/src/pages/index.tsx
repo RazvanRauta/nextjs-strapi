@@ -10,7 +10,7 @@ interface OwnProps {}
 
 type Props = OwnProps
 
-const Index: FunctionComponent<Props> = (props) => {
+const Index: FunctionComponent<Props> = () => {
   return <h1>Hello</h1>
 }
 export default Index

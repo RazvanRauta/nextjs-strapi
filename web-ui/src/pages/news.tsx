@@ -6,8 +6,8 @@
 
 import React, { FunctionComponent } from 'react'
 import { Container } from '@chakra-ui/core'
-import { NewsPostsDocument, useNewsPostsQuery } from '../generated/graphql'
-import { initializeApollo } from '../utils/apollo'
+import { NewsPostsDocument, useNewsPostsQuery } from '@/generated/graphql'
+import { initializeApollo } from '@/utils/apollo'
 import NewsGrid from '@/components/NewsGrid/NewsGrid'
 
 interface OwnProps {}
@@ -20,7 +20,10 @@ const News: FunctionComponent<Props> = () => {
   })
   if (loading) return <p>Loading</p>
 
-  if (error) return <p>{error}</p>
+  if (error) {
+    console.log(error)
+    return <p>There was a error</p>
+  }
 
   return (
     <Container maxW="xl" centerContent>
@@ -44,10 +47,11 @@ export async function getStaticProps() {
 
   return {
     props: {
-      initialApolloState: apolloClient.cache.extract(true),
+      initialApolloState: apolloClient.cache.extract(),
     },
     revalidate: 1,
   }
 }
 
+// @ts-ignore
 export default News

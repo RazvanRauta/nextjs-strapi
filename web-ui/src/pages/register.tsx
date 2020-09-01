@@ -13,7 +13,7 @@ interface OwnProps {}
 
 type Props = OwnProps
 
-const Register: FunctionComponent<Props> = (props) => {
+const Register: FunctionComponent<Props> = () => {
   return (
     <Wrapper variant="small">
       <Formik

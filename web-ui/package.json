@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "develop": "next dev",
+    "develop": "yarn gen && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint \"**/*.{js,ts,tsx}\" --quiet --fix",
@@ -46,9 +46,20 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.6",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.13",
     "mini-svg-data-uri": "^1.2.3",
     "prettier": "^2.1.1",
     "typescript": "^4.0.2",
     "url-loader": "^4.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts?(x)": ["eslint --cache --fix","prettier --write"],
+    "*.js?(x)": ["eslint --cache --fix","prettier --write"]
   }
 }

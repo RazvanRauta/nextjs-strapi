@@ -1,5 +1,5 @@
 overwrite: true
-schema: "http://localhost:1337/graphql"
+schema: "https://rr-strapi.herokuapp.com/graphql"
 documents: "src/graphql/**/*.graphql"
 generates:
   src/generated/graphql.tsx:

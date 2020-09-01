@@ -4,40 +4,59 @@
  * 14:22
  */
 
-import React, { FunctionComponent } from 'react'
-import { Grid } from '@chakra-ui/core'
-import { Maybe, NewsPosts, UploadFile } from '@/generated/graphql'
+import React, { FunctionComponent, Fragment } from 'react'
+import { Button, Grid } from '@chakra-ui/core'
 import NewsCard from '@/components/NewsCard/NewsCard'
+import { NewsPosts, useNewsPostsQuery } from '@/generated/graphql'
+import { NetworkStatus } from '@apollo/client'
+import Error from 'next/error'
 
-interface OwnProps {
-  newsPosts?: Maybe<
-    Array<
-      Maybe<
-        { __typename?: 'NewsPosts' } & Pick<
-          NewsPosts,
-          'id' | 'Slug' | 'Title' | 'Date' | 'Text'
-        > & {
-            Image?: Maybe<
-              { __typename?: 'UploadFile' } & Pick<
-                UploadFile,
-                'width' | 'height' | 'formats'
-              >
-            >
-          }
-      >
-    >
-  >
-}
+interface OwnProps {}
 
 type Props = OwnProps
 
-const NewsGrid: FunctionComponent<Props> = ({ newsPosts }) => {
+const NewsGrid: FunctionComponent<Props> = () => {
+  const { loading, error, data, fetchMore, networkStatus } = useNewsPostsQuery({
+    variables: { start: 0, limit: 6 },
+  })
+  const loadingMorePosts = networkStatus === NetworkStatus.fetchMore
+
+  const {
+    // @ts-ignore
+    newsPosts,
+    // @ts-ignore
+    newsPostsConnection: {
+      aggregate: { totalCount },
+    },
+  } = data
+
+  const loadMorePosts = () => {
+    fetchMore({
+      variables: {
+        start: newsPosts.length,
+      },
+    })
+  }
+
+  if (error) return <Error statusCode={500} />
+
+  if (loading && !loadingMorePosts) return <div>Loading</div>
+
+  const areMorePosts = newsPosts.length < totalCount
+
   return (
-    <Grid templateColumns={'repeat(3,1fr)'}>
-      {newsPosts?.map((post) => (
-        <NewsCard key={post?.id} {...post} />
-      ))}
-    </Grid>
+    <Fragment>
+      <Grid templateColumns={'repeat(3,1fr)'}>
+        {newsPosts?.map((post: NewsPosts) => (
+          <NewsCard key={post?.id} {...post} />
+        ))}
+      </Grid>
+      {areMorePosts && (
+        <Button isLoading={loadingMorePosts} onClick={() => loadMorePosts()}>
+          Show More
+        </Button>
+      )}
+    </Fragment>
   )
 }
 

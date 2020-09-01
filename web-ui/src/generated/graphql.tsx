@@ -1106,6 +1106,16 @@ export type NewsPostsQuery = { __typename?: 'Query' } & {
       >
     >
   >
+  newsPostsConnection?: Maybe<
+    { __typename?: 'NewsPostsConnection' } & {
+      aggregate?: Maybe<
+        { __typename?: 'NewsPostsAggregator' } & Pick<
+          NewsPostsAggregator,
+          'totalCount'
+        >
+      >
+    }
+  >
 }
 
 export const ArticleDocument = gql`
@@ -1176,6 +1186,11 @@ export const NewsPostsDocument = gql`
       }
       Date
       Text
+    }
+    newsPostsConnection {
+      aggregate {
+        totalCount
+      }
     }
   }
 `

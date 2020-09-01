@@ -7,55 +7,19 @@
 import React, { FunctionComponent } from 'react'
 import {
   ArticleDocument,
-  Maybe,
   NewsPosts,
   NewsPostsDocument,
-  UploadFile,
 } from '@/generated/graphql'
 import { initializeApollo } from '@/utils/apollo'
 import Article from '@/components/Article/Article'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { useRouter } from 'next/router'
 
-interface OwnProps {
-  newsPosts?: Maybe<
-    Array<
-      Maybe<
-        { __typename?: 'NewsPosts' } & Pick<
-          NewsPosts,
-          'id' | 'Slug' | 'Title' | 'Date' | 'Text'
-        > & {
-            Image?: Maybe<
-              { __typename?: 'UploadFile' } & Pick<
-                UploadFile,
-                'width' | 'height' | 'formats'
-              >
-            >
-          }
-      >
-    >
-  >
-  error?: any
-  loading?: boolean
-}
+interface OwnProps {}
 
 type Props = OwnProps
 
-const ArticlePage: FunctionComponent<Props> = ({
-  newsPosts,
-  error,
-  loading,
-}) => {
-  const router = useRouter()
-
-  if (loading || router.isFallback) return <p>Loading</p>
-
-  if (error) {
-    console.log(error)
-    return <p>There was a error</p>
-  }
-
-  return <Article {...newsPosts?.[0]} />
+const ArticlePage: FunctionComponent<Props> = () => {
+  return <Article />
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -91,7 +55,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     id: slug,
   }
 
-  const { data, error, loading } = await apolloClient.query({
+  await apolloClient.query({
     query: ArticleDocument,
     variables: allArticleVars,
   })
@@ -99,9 +63,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       initialApolloState: apolloClient.cache.extract(),
-      newsPosts: data?.newsPosts,
-      error: error ?? null,
-      loading,
     },
     revalidate: 1,
   }

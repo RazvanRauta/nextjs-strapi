@@ -4,7 +4,7 @@
   "extensions": {
     "endpoints": {
       "Default GraphQL Endpoint": {
-        "url": "http://localhost:1337/graphql",
+        "url": "https://rr-strapi.herokuapp.com/graphql",
         "headers": {
           "user-agent": "JS GraphQL"
         },

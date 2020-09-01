@@ -11,4 +11,9 @@ query NewsPosts($limit: Int!, $start: Int!) {
         Date
         Text
     }
+    newsPostsConnection {
+        aggregate {
+            totalCount
+        }
+    }
 }

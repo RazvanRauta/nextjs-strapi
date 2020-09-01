@@ -12,7 +12,7 @@ interface OwnProps {}
 
 type Props = OwnProps
 
-const Footer: FunctionComponent<Props> = (props) => {
+const Footer: FunctionComponent<Props> = () => {
   return (
     <StyledFooter>
       <Wrapper variant={'large'}>

@@ -6,7 +6,13 @@
 // @flow
 import React, { FunctionComponent, Fragment } from 'react'
 import { useArticleQuery } from '@/generated/graphql'
-import { Box, Container, Heading, Image as ChakraImage } from '@chakra-ui/core'
+import {
+  Box,
+  Container,
+  Heading,
+  Image as ChakraImage,
+  Flex,
+} from '@chakra-ui/core'
 import {
   NextSeo,
   NextSeoProps,
@@ -32,7 +38,7 @@ const Article: FunctionComponent<Props> = () => {
 
   if (error) return <Error statusCode={500} />
 
-  if (loading) return <Box>Loading</Box>
+  if (loading || router.isFallback) return <Box>Loading</Box>
 
   // @ts-ignore
   const { newsPosts } = data
@@ -96,10 +102,20 @@ const Article: FunctionComponent<Props> = () => {
           maxWidth={'100%'}
           width={800}
         />
-        <Heading>{Title}</Heading>
-        <Moment format="MMM Do, YYYY">{Date}</Moment>
+        <Flex
+          maxWidth={800}
+          width={'100%'}
+          justifyContent="space-between"
+          alignItems="center"
+          mt={4}
+        >
+          <Heading>{Title}</Heading>
+          <Moment format="MMM Do, YYYY">{Date}</Moment>
+        </Flex>
         <Box>
-          <ReactMarkdown source={Text ?? undefined} />
+          <Box maxWidth={800} mt={10}>
+            <ReactMarkdown source={Text ?? undefined} />
+          </Box>
         </Box>
       </Container>
     </Fragment>

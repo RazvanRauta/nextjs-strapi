@@ -50,7 +50,7 @@ export const Layout = ({
       <meta name="theme-color" content="#317EFB" />
       <title>{title}</title>
     </Head>
-    <Wrapper variant="large">
+    <Wrapper variant="full">
       <NavBar />
       {children}
     </Wrapper>

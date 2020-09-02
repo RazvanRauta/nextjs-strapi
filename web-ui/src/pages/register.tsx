@@ -8,6 +8,7 @@ import Wrapper from '@/components/Wrapper/Wrapper'
 import { Form, Formik } from 'formik'
 import InputFiled from '@/components/InputField/InputFiled'
 import { Box, Button } from '@chakra-ui/core'
+import styled from '@emotion/styled'
 
 interface OwnProps {}
 
@@ -15,13 +16,19 @@ type Props = OwnProps
 
 const Register: FunctionComponent<Props> = () => {
   return (
-    <Wrapper variant="small">
+    <Wrapper
+      variant="small"
+      height={'calc(100vh - 72px - 177px)'}
+      justifyContent="center"
+      display="flex"
+      width="400px"
+    >
       <Formik
         initialValues={{ username: '', password: '' }}
         onSubmit={(values) => console.log(values)}
       >
         {({ isSubmitting }) => (
-          <Form>
+          <StyledForm>
             <Box marginTop={2}>
               <InputFiled
                 label={'Username'}
@@ -47,11 +54,15 @@ const Register: FunctionComponent<Props> = () => {
                 Register
               </Button>
             </Box>
-          </Form>
+          </StyledForm>
         )}
       </Formik>
     </Wrapper>
   )
 }
+const StyledForm = styled(Form)`
+  margin: auto;
+  width: 100%;
+`
 
 export default Register

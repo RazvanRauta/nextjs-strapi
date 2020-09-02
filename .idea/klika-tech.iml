@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/.cache" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/build" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/.next" />
+      <excludeFolder url="file://$MODULE_DIR$/temp" />
+      <excludeFolder url="file://$MODULE_DIR$/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/web-ui/.next" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="@types/reflexbox" level="application" />
+    <orderEntry type="library" name="@types/node" level="application" />
+    <orderEntry type="library" name="@types/react" level="application" />
+    <orderEntry type="library" name="@types/styled-components" level="application" />
+    <orderEntry type="library" name="@types/styled-system" level="application" />
+  </component>
+</module>

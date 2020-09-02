@@ -26,7 +26,7 @@ export async function getStaticProps() {
   const apolloClient = initializeApollo()
 
   const allNewsPostsPostsQueryVars = {
-    limit: 6,
+    limit: 3,
     start: 0,
   }
 

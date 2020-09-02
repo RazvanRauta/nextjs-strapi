@@ -4,11 +4,14 @@
  * 14:22
  */
 
-import React, { FunctionComponent, Fragment } from 'react'
+import React, { FunctionComponent, Fragment, useState } from 'react'
 import { Button, Grid } from '@chakra-ui/core'
 import NewsCard from '@/components/NewsCard/NewsCard'
-import { NewsPosts, useNewsPostsQuery } from '@/generated/graphql'
-import { NetworkStatus } from '@apollo/client'
+import {
+  NewsPosts,
+  useNewsPostsQuery,
+  NewsPostsQueryVariables,
+} from '@/generated/graphql'
 import Error from 'next/error'
 
 interface OwnProps {}
@@ -16,10 +19,15 @@ interface OwnProps {}
 type Props = OwnProps
 
 const NewsGrid: FunctionComponent<Props> = () => {
-  const { loading, error, data, fetchMore, networkStatus } = useNewsPostsQuery({
-    variables: { start: 0, limit: 6 },
+  const vars: NewsPostsQueryVariables = {
+    limit: 3,
+    start: 0,
+  }
+  const { loading, error, data, fetchMore } = useNewsPostsQuery({
+    variables: vars,
   })
-  const loadingMorePosts = networkStatus === NetworkStatus.fetchMore
+
+  const [load, setLoading] = useState(false)
 
   const {
     // @ts-ignore
@@ -31,16 +39,18 @@ const NewsGrid: FunctionComponent<Props> = () => {
   } = data
 
   const loadMorePosts = () => {
+    setLoading(true)
     fetchMore({
       variables: {
         start: newsPosts.length,
+        limit: 3,
       },
-    })
+    }).then(() => setLoading(false))
   }
 
   if (error) return <Error statusCode={500} />
 
-  if (loading && !loadingMorePosts) return <div>Loading</div>
+  if (loading) return <div>Loading</div>
 
   const areMorePosts = newsPosts.length < totalCount
 
@@ -52,7 +62,12 @@ const NewsGrid: FunctionComponent<Props> = () => {
         ))}
       </Grid>
       {areMorePosts && (
-        <Button isLoading={loadingMorePosts} onClick={() => loadMorePosts()}>
+        <Button
+          mt={10}
+          bg="teal.400"
+          isLoading={load}
+          onClick={() => loadMorePosts()}
+        >
           Show More
         </Button>
       )}

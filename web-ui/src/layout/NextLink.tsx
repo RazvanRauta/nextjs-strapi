@@ -36,7 +36,9 @@ export const Link = ({
       shallow={shallow}
       prefetch={prefetch}
     >
-      <ChakraLink {...chakraProps}>{children}</ChakraLink>
+      <ChakraLink _focus={{ boxShadow: 'none' }} {...chakraProps}>
+        {children}
+      </ChakraLink>
     </NextLink>
   )
 }

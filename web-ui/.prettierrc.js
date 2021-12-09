@@ -1,16 +1,10 @@
-/**
- * @author Razvan Rauta
- * 02.03.2020
- * 22:43
- *
- * Prettier config
- */
-
 module.exports = {
-  semi: false,
-  trailingComma: 'es5',
+  arrowParens: 'always',
   singleQuote: true,
-  printWidth: 80,
-  useTabs: false,
-  jsxSingleQuote: false,
-}
+  jsxSingleQuote: true,
+  tabWidth: 2,
+  semi: true,
+  sortClassNamesUnknownClassesSeparator: '',
+  sortClassNamesPrefixes:
+    'xs:,sm:,md:,lg:,xl:,2xl:,dark:,motion-safe:,motion-reduce:,first:,last:,odd:,even:,visited:,checked:,group-hover:,group-focus:,focus-within:,hover:,focus:,focus-visible:,active:,disabled:',
+};

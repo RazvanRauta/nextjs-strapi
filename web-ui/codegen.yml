@@ -1,9 +1,12 @@
 overwrite: true
-schema: "https://rr-strapi.herokuapp.com/graphql"
-documents: "src/graphql/**/*.graphql"
+schema: "http://localhost:1337/graphql"
+documents: "src/**/*.graphql"
 generates:
-  src/generated/graphql.tsx:
+  src/generated/index.ts:
     plugins:
       - "typescript"
       - "typescript-operations"
-      - "typescript-react-apollo"
+      - "typescript-react-query"
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"

@@ -1,14 +1,22 @@
-query Article($id: String!) {
-    newsPosts(where: { Slug: $id }) {
-        id
-        Title
-        Slug
-        Text
-        Image {
-            formats
-            width
-            height
+query Article($id: ID) {
+  newsPost(id: $id) {
+    data {
+      id
+      attributes {
+        title
+        slug
+        text
+        date
+        image {
+          data {
+            attributes {
+              formats
+              width
+              height
+            }
+          }
         }
-        Date
+      }
     }
+  }
 }

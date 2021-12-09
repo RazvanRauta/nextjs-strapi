@@ -1,24 +1,19 @@
-import React from 'react'
-import { ChakraProvider } from '@chakra-ui/core'
-import { DefaultSeo } from 'next-seo'
-import { SEO } from '../../next-seo.config'
-import { ApolloProvider } from '@apollo/client'
-import { useApollo } from '@/utils/apollo'
-import webUiTheme from '@/theme/theme'
-import { Layout } from '@/layout/Layout'
+import { AppProps } from 'next/app';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Hydrate } from 'react-query/hydration';
 
-function MyApp({ Component, pageProps }: any) {
-  const apolloClient = useApollo(pageProps.initialApolloState)
+import '@/styles/globals.css';
+
+const queryClient = new QueryClient();
+
+function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={apolloClient}>
-      <ChakraProvider theme={webUiTheme} resetCSS>
-        <DefaultSeo {...SEO} />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </ChakraProvider>
-    </ApolloProvider>
-  )
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <Component {...pageProps} />
+      </Hydrate>
+    </QueryClientProvider>
+  );
 }
 
-export default MyApp
+export default MyApp;

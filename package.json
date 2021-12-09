@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "start": "cd backend && npm run start",
     "setup:yarn": "yarn && concurrently setup:yarn:*",
     "setup:yarn:backend": "cd backend && yarn",
     "setup:yarn:frontend": "cd web-ui && yarn",

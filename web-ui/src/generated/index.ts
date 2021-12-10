@@ -1,5 +1,9 @@
 /* eslint-disable */
+import { GraphQLClient } from 'graphql-request';
+import { RequestInit } from 'graphql-request/dist/types.dom';
 import { useQuery, UseQueryOptions } from 'react-query';
+import * as Dom from 'graphql-request/dist/types.dom';
+import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -13,28 +17,13 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
 };
 
 function fetcher<TData, TVariables>(
-  endpoint: string,
-  requestInit: RequestInit,
+  client: GraphQLClient,
   query: string,
-  variables?: TVariables
+  variables?: TVariables,
+  headers?: RequestInit['headers']
 ) {
-  return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      ...requestInit,
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const json = await res.json();
-
-    if (json.errors) {
-      const { message } = json.errors[0];
-
-      throw new Error(message);
-    }
-
-    return json.data;
-  };
+  return async (): Promise<TData> =>
+    client.request<TData, TVariables>(query, variables, headers);
 }
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -984,19 +973,34 @@ export const ArticleDocument = `
 }
     `;
 export const useArticleQuery = <TData = ArticleQuery, TError = unknown>(
-  dataSource: { endpoint: string; fetchParams?: RequestInit },
+  client: GraphQLClient,
   variables?: ArticleQueryVariables,
-  options?: UseQueryOptions<ArticleQuery, TError, TData>
+  options?: UseQueryOptions<ArticleQuery, TError, TData>,
+  headers?: RequestInit['headers']
 ) =>
   useQuery<ArticleQuery, TError, TData>(
     variables === undefined ? ['Article'] : ['Article', variables],
     fetcher<ArticleQuery, ArticleQueryVariables>(
-      dataSource.endpoint,
-      dataSource.fetchParams || {},
+      client,
       ArticleDocument,
-      variables
+      variables,
+      headers
     ),
     options
+  );
+
+useArticleQuery.getKey = (variables?: ArticleQueryVariables) =>
+  variables === undefined ? ['Article'] : ['Article', variables];
+useArticleQuery.fetcher = (
+  client: GraphQLClient,
+  variables?: ArticleQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<ArticleQuery, ArticleQueryVariables>(
+    client,
+    ArticleDocument,
+    variables,
+    headers
   );
 export const NewsPostsDocument = `
     query NewsPosts($limit: Int!, $start: Int!) {
@@ -1031,17 +1035,133 @@ export const NewsPostsDocument = `
 }
     `;
 export const useNewsPostsQuery = <TData = NewsPostsQuery, TError = unknown>(
-  dataSource: { endpoint: string; fetchParams?: RequestInit },
+  client: GraphQLClient,
   variables: NewsPostsQueryVariables,
-  options?: UseQueryOptions<NewsPostsQuery, TError, TData>
+  options?: UseQueryOptions<NewsPostsQuery, TError, TData>,
+  headers?: RequestInit['headers']
 ) =>
   useQuery<NewsPostsQuery, TError, TData>(
     ['NewsPosts', variables],
     fetcher<NewsPostsQuery, NewsPostsQueryVariables>(
-      dataSource.endpoint,
-      dataSource.fetchParams || {},
+      client,
       NewsPostsDocument,
-      variables
+      variables,
+      headers
     ),
     options
   );
+
+useNewsPostsQuery.getKey = (variables: NewsPostsQueryVariables) => [
+  'NewsPosts',
+  variables,
+];
+useNewsPostsQuery.fetcher = (
+  client: GraphQLClient,
+  variables: NewsPostsQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<NewsPostsQuery, NewsPostsQueryVariables>(
+    client,
+    NewsPostsDocument,
+    variables,
+    headers
+  );
+
+export const ArticleGql = gql`
+  query Article($id: ID) {
+    newsPost(id: $id) {
+      data {
+        id
+        attributes {
+          title
+          slug
+          text
+          date
+          image {
+            data {
+              attributes {
+                formats
+                width
+                height
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const NewsPostsGql = gql`
+  query NewsPosts($limit: Int!, $start: Int!) {
+    newsPosts(pagination: { limit: $limit, start: $start }) {
+      meta {
+        pagination {
+          total
+          page
+          pageSize
+          pageCount
+        }
+      }
+      data {
+        id
+        attributes {
+          slug
+          title
+          date
+          text
+          image {
+            data {
+              attributes {
+                width
+                height
+                formats
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export type SdkFunctionWrapper = <T>(
+  action: (requestHeaders?: Record<string, string>) => Promise<T>,
+  operationName: string
+) => Promise<T>;
+
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+
+export function getSdk(
+  client: GraphQLClient,
+  withWrapper: SdkFunctionWrapper = defaultWrapper
+) {
+  return {
+    Article(
+      variables?: ArticleQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<ArticleQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ArticleQuery>(ArticleGql, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'Article'
+      );
+    },
+    NewsPosts(
+      variables: NewsPostsQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<NewsPostsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<NewsPostsQuery>(NewsPostsGql, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'NewsPosts'
+      );
+    },
+  };
+}
+export type Sdk = ReturnType<typeof getSdk>;

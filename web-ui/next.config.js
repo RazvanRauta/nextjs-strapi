@@ -6,10 +6,7 @@ module.exports = {
 
   reactStrictMode: true,
 
-  // Uncoment to add domain whitelist
-  // images: {
-  //   domains: [
-  //     'res.cloudinary.com',
-  //   ],
-  // },
+  images: {
+    domains: ['strapi-admin-uploads.s3.eu-west-3.amazonaws.com'],
+  },
 };

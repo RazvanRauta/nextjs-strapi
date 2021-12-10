@@ -1670,7 +1670,7 @@
     lodash "4.17.21"
     umzug "2.3.0"
 
-"@strapi/design-system@0.0.1-alpha.70":
+"@strapi/design-system@0.0.1-alpha.70", "@strapi/design-system@^0.0.1-alpha.70":
   version "0.0.1-alpha.70"
   resolved "https://registry.yarnpkg.com/@strapi/design-system/-/design-system-0.0.1-alpha.70.tgz#d2998b248654cdd66af4d1736d41032d53501063"
   integrity sha512-AvcwsA27G2Bm4Gna8hgEMAZjUmQrDagx8NtuUDVStr+51v/qqx+sk3M7JbhqJrYCYA+YsyqS9v3O14Vv0LKLUA==

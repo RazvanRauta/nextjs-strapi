@@ -26,7 +26,8 @@
       ],
       "type": "media",
       "multiple": false,
-      "required": true
+      "required": true,
+      "plugin": "upload"
     },
     "text": {
       "type": "richtext",

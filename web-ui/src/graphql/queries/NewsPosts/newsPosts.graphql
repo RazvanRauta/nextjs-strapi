@@ -1,19 +1,30 @@
 query NewsPosts($limit: Int!, $start: Int!) {
-    newsPosts(limit: $limit, start: $start ) {
-        id
-        Slug
-        Title
-        Image {
-            width
-            height
-            formats
-        }
-        Date
-        Text
+  newsPosts(pagination: { limit: $limit, start: $start }) {
+    meta {
+      pagination {
+        total
+        page
+        pageSize
+        pageCount
+      }
     }
-    newsPostsConnection {
-        aggregate {
-            totalCount
+    data {
+      id
+      attributes {
+        slug
+        title
+        date
+        text
+        image {
+          data {
+            attributes {
+              width
+              height
+              formats
+            }
+          }
         }
+      }
     }
+  }
 }

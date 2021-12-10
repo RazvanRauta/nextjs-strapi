@@ -1,21 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/components/*": ["src/components/*"],
-      "@/public/*": ["src/public/*"],
-      "@/generated/*": ["src/generated/*"],
-      "@/graphql/*": ["src/graphql/*"],
-      "@/layout/*": ["src/layout/*"],
-      "@/theme/*": ["src/theme/*"],
-      "@/utils/*": ["src/utils/*"]
-    },
-    "target": "esnext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -24,16 +10,16 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
+    "incremental": true
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"],
+  "moduleResolution": ["node_modules", ".next", "node"]
 }

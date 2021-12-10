@@ -2,18 +2,18 @@
 
 Simple static web app with dynamic content
 
-### Created with:
+## Created with
 
- ``1. NextJs 9.5.0``
- 
- ``2. Strapi 3.1.4``
- 
- ``3. Apollo 3.0``
- 
- ``4. GrpahQL 15.0``
- 
- ``5. React 16.13.0``
- 
- ``6. Chakra UI 1.0``
- 
- ``7. Typescript 4.0``
+ ``1. NextJs 12.0.7``
+
+ ``2. Strapi 4.0.0``
+
+ ``3. React Query 3.34``
+
+ ``4. GrpahQL 16.1``
+
+ ``5. React 17.0.2``
+
+ ``6. Tailwindcss 2.2``
+
+ ``7. Typescript 4.5.2``

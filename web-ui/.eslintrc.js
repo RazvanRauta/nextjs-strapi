@@ -1,37 +1,60 @@
-/**
- * @author Razvan Rauta
- * 29.08.2020
- * 15:57
- */
-
 module.exports = {
-  parser: '@typescript-eslint/parser', // Specifies the ESLint parser
-  parserOptions: {
-    ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
-    sourceType: 'module', // Allows for the use of imports
-    ecmaFeatures: {
-      jsx: true, // Allows for the parsing of JSX
-    },
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
   },
-  settings: {
-    react: {
-      version: 'detect', // Tells eslint-plugin-react to automatically detect the version of React to use
-    },
-  },
+  plugins: ['@typescript-eslint', 'simple-import-sort'],
   extends: [
-    'plugin:react/recommended', // Uses the recommended rules from @eslint-plugin-react
-    'plugin:@typescript-eslint/recommended', // Uses the recommended rules from @typescript-eslint/eslint-plugin
-    'prettier/@typescript-eslint', // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
-    'plugin:prettier/recommended', // Enables eslint-plugin-prettier and eslint-config-prettier. This will display prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+    'eslint:recommended',
+    'next',
+    'next/core-web-vitals',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
   ],
   rules: {
-    // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
-    // e.g. "@typescript-eslint/explicit-function-return-type": "off",
-    '@typescript-eslint/explicit-function-return-type': 'off',
+    'no-unused-vars': 'off',
+    'no-console': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'react/react-in-jsx-scope': 'off',
-    'react/prop-types': 'off',
-    '@typescript-eslint/no-empty-interface': 'warn',
-    '@typescript-eslint/ban-ts-comment': 'off',
+
+    // Sort
+    'simple-import-sort/exports': 'warn',
+    'simple-import-sort/imports': [
+      'warn',
+      {
+        groups: [
+          // ext library & side effect imports
+          ['^@?\\w', '^\\u0000'],
+          // {s}css files
+          ['^.+\\.s?css$'],
+          // Lib and hooks
+          ['^@/lib', '^@/hooks'],
+          // static data
+          ['^@/data'],
+          // components
+          ['^@/components'],
+          // Other imports
+          ['^@/'],
+          // relative paths up until 3 level
+          [
+            '^\\./?$',
+            '^\\.(?!/?$)',
+            '^\\.\\./?$',
+            '^\\.\\.(?!/?$)',
+            '^\\.\\./\\.\\./?$',
+            '^\\.\\./\\.\\.(?!/?$)',
+            '^\\.\\./\\.\\./\\.\\./?$',
+            '^\\.\\./\\.\\./\\.\\.(?!/?$)',
+          ],
+          ['^@/types'],
+          // other that didnt fit in
+          ['^'],
+        ],
+      },
+    ],
   },
-}
+  globals: {
+    React: true,
+    JSX: true,
+  },
+};

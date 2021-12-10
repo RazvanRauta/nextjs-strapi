@@ -33,4 +33,7 @@ yarn-error.log*
 # vercel
 .vercel
 
-.eslintcache
+# next-sitemap
+robots.txt
+sitemap.xml
+legacy/*

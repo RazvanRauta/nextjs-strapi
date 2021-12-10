@@ -116,3 +116,4 @@ dist
 .yarn/build-state.yml
 .pnp.*
 
+schema.graphql

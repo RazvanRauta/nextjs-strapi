@@ -1,9 +1,0 @@
-overwrite: true
-schema: "https://rr-strapi.herokuapp.com/graphql"
-documents: "src/graphql/**/*.graphql"
-generates:
-  src/generated/graphql.tsx:
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"

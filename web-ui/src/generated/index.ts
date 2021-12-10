@@ -1,9 +1,7 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
 import { useQuery, UseQueryOptions } from 'react-query';
-import * as Dom from 'graphql-request/dist/types.dom';
-import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -870,7 +868,7 @@ export type ArticleQuery = {
                             attributes?:
                               | {
                                   __typename?: 'UploadFile';
-                                  formats?: any | null | undefined;
+                                  formats?: Formats | null | undefined;
                                   width?: number | null | undefined;
                                   height?: number | null | undefined;
                                 }
@@ -891,10 +889,75 @@ export type ArticleQuery = {
     | undefined;
 };
 
+export type ArticleBySlugQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+export type ArticleBySlugQuery = {
+  __typename?: 'Query';
+  newsPosts?:
+    | {
+        __typename?: 'NewsPostEntityResponseCollection';
+        data: Array<{
+          __typename?: 'NewsPostEntity';
+          id?: string | null | undefined;
+          attributes?:
+            | {
+                __typename?: 'NewsPost';
+                slug: string;
+                title?: string | null | undefined;
+                date: any;
+                text: string;
+                image: {
+                  __typename?: 'UploadFileEntityResponse';
+                  data?:
+                    | {
+                        __typename?: 'UploadFileEntity';
+                        attributes?:
+                          | {
+                              __typename?: 'UploadFile';
+                              width?: number | null | undefined;
+                              height?: number | null | undefined;
+                              formats?: Formats | null | undefined;
+                            }
+                          | null
+                          | undefined;
+                      }
+                    | null
+                    | undefined;
+                };
+              }
+            | null
+            | undefined;
+        }>;
+      }
+    | null
+    | undefined;
+};
+
 export type NewsPostsQueryVariables = Exact<{
   limit: Scalars['Int'];
   start: Scalars['Int'];
 }>;
+
+export interface Formats {
+  large: ImageSize;
+  small: ImageSize;
+  medium: ImageSize;
+  thumbnail: ImageSize;
+}
+
+export interface ImageSize {
+  ext: string;
+  url: string;
+  hash: string;
+  mime: string;
+  name: string;
+  path: null;
+  size: number;
+  width: number;
+  height: number;
+}
 
 export type NewsPostsQuery = {
   __typename?: 'Query';
@@ -931,7 +994,7 @@ export type NewsPostsQuery = {
                               __typename?: 'UploadFile';
                               width?: number | null | undefined;
                               height?: number | null | undefined;
-                              formats?: any | null | undefined;
+                              formats?: Formats | null | undefined;
                             }
                           | null
                           | undefined;
@@ -1002,6 +1065,65 @@ useArticleQuery.fetcher = (
     variables,
     headers
   );
+export const ArticleBySlugDocument = `
+    query ArticleBySlug($slug: String!) {
+  newsPosts(filters: {slug: {eq: $slug}}) {
+    data {
+      id
+      attributes {
+        slug
+        title
+        date
+        text
+        image {
+          data {
+            attributes {
+              width
+              height
+              formats
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useArticleBySlugQuery = <
+  TData = ArticleBySlugQuery,
+  TError = unknown
+>(
+  client: GraphQLClient,
+  variables: ArticleBySlugQueryVariables,
+  options?: UseQueryOptions<ArticleBySlugQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<ArticleBySlugQuery, TError, TData>(
+    ['ArticleBySlug', variables],
+    fetcher<ArticleBySlugQuery, ArticleBySlugQueryVariables>(
+      client,
+      ArticleBySlugDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+
+useArticleBySlugQuery.getKey = (variables: ArticleBySlugQueryVariables) => [
+  'ArticleBySlug',
+  variables,
+];
+useArticleBySlugQuery.fetcher = (
+  client: GraphQLClient,
+  variables: ArticleBySlugQueryVariables,
+  headers?: RequestInit['headers']
+) =>
+  fetcher<ArticleBySlugQuery, ArticleBySlugQueryVariables>(
+    client,
+    ArticleBySlugDocument,
+    variables,
+    headers
+  );
 export const NewsPostsDocument = `
     query NewsPosts($limit: Int!, $start: Int!) {
   newsPosts(pagination: {limit: $limit, start: $start}) {
@@ -1066,102 +1188,3 @@ useNewsPostsQuery.fetcher = (
     variables,
     headers
   );
-
-export const ArticleGql = gql`
-  query Article($id: ID) {
-    newsPost(id: $id) {
-      data {
-        id
-        attributes {
-          title
-          slug
-          text
-          date
-          image {
-            data {
-              attributes {
-                formats
-                width
-                height
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-export const NewsPostsGql = gql`
-  query NewsPosts($limit: Int!, $start: Int!) {
-    newsPosts(pagination: { limit: $limit, start: $start }) {
-      meta {
-        pagination {
-          total
-          page
-          pageSize
-          pageCount
-        }
-      }
-      data {
-        id
-        attributes {
-          slug
-          title
-          date
-          text
-          image {
-            data {
-              attributes {
-                width
-                height
-                formats
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-export type SdkFunctionWrapper = <T>(
-  action: (requestHeaders?: Record<string, string>) => Promise<T>,
-  operationName: string
-) => Promise<T>;
-
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
-
-export function getSdk(
-  client: GraphQLClient,
-  withWrapper: SdkFunctionWrapper = defaultWrapper
-) {
-  return {
-    Article(
-      variables?: ArticleQueryVariables,
-      requestHeaders?: Dom.RequestInit['headers']
-    ): Promise<ArticleQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<ArticleQuery>(ArticleGql, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'Article'
-      );
-    },
-    NewsPosts(
-      variables: NewsPostsQueryVariables,
-      requestHeaders?: Dom.RequestInit['headers']
-    ): Promise<NewsPostsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<NewsPostsQuery>(NewsPostsGql, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'NewsPosts'
-      );
-    },
-  };
-}
-export type Sdk = ReturnType<typeof getSdk>;

@@ -1,0 +1,22 @@
+query ArticleBySlug($slug: String!) {
+  newsPosts(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        title
+        date
+        text
+        image {
+          data {
+            attributes {
+              width
+              height
+              formats
+            }
+          }
+        }
+      }
+    }
+  }
+}

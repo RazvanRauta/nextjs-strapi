@@ -12,6 +12,7 @@
   },
   "devDependencies": {},
   "dependencies": {
+    "@strapi/design-system": "^0.0.1-alpha.70",
     "@strapi/plugin-graphql": "4.0.0",
     "@strapi/plugin-i18n": "4.0.0",
     "@strapi/plugin-upload": "4.0.0",

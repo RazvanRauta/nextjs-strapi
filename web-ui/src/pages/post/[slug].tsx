@@ -65,7 +65,13 @@ export default function PostPage({ preview }: PostPageProps) {
 
   return (
     <Layout preview={preview}>
-      <Seo templateTitle='Post' />
+      <Seo
+        templateTitle={data?.newsPosts?.data?.[0]?.attributes?.title || 'Post'}
+        image={
+          data?.newsPosts?.data?.[0]?.attributes?.image.data?.attributes
+            ?.formats?.medium.url
+        }
+      />
 
       <main>
         <section className=''>

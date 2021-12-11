@@ -6,11 +6,11 @@ generates:
     plugins:
       - 'typescript'
       - 'typescript-operations'
-      - 'typescript-react-query'
-    config:
-      fetcher: graphql-request
-      exposeFetcher: true
-      exposeQueryKeys: true
+      - 'typescript-rtk-query':
+           importBaseApiFrom: '@/lib/baseApi'
+           exportHooks: true
+           overrideExisting: 'module.hot?.status() === "apply"'
+
   ./graphql.schema.json:
     plugins:
       - 'introspection'

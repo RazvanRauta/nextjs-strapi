@@ -16,6 +16,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'no-console': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^_' }],
 
     // Sort
     'simple-import-sort/exports': 'warn',

@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { GraphQLClient } from 'graphql-request';
-import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useQuery, UseQueryOptions } from 'react-query';
+/* eslint-disable  */
+import { api } from '@/lib/baseApi';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -13,16 +11,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>;
 };
-
-function fetcher<TData, TVariables>(
-  client: GraphQLClient,
-  query: string,
-  variables?: TVariables,
-  headers?: RequestInit['headers']
-) {
-  return async (): Promise<TData> =>
-    client.request<TData, TVariables>(query, variables, headers);
-}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -1035,36 +1023,6 @@ export const ArticleDocument = `
   }
 }
     `;
-export const useArticleQuery = <TData = ArticleQuery, TError = unknown>(
-  client: GraphQLClient,
-  variables?: ArticleQueryVariables,
-  options?: UseQueryOptions<ArticleQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<ArticleQuery, TError, TData>(
-    variables === undefined ? ['Article'] : ['Article', variables],
-    fetcher<ArticleQuery, ArticleQueryVariables>(
-      client,
-      ArticleDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useArticleQuery.getKey = (variables?: ArticleQueryVariables) =>
-  variables === undefined ? ['Article'] : ['Article', variables];
-useArticleQuery.fetcher = (
-  client: GraphQLClient,
-  variables?: ArticleQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<ArticleQuery, ArticleQueryVariables>(
-    client,
-    ArticleDocument,
-    variables,
-    headers
-  );
 export const ArticleBySlugDocument = `
     query ArticleBySlug($slug: String!) {
   newsPosts(filters: {slug: {eq: $slug}}) {
@@ -1089,41 +1047,6 @@ export const ArticleBySlugDocument = `
   }
 }
     `;
-export const useArticleBySlugQuery = <
-  TData = ArticleBySlugQuery,
-  TError = unknown
->(
-  client: GraphQLClient,
-  variables: ArticleBySlugQueryVariables,
-  options?: UseQueryOptions<ArticleBySlugQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<ArticleBySlugQuery, TError, TData>(
-    ['ArticleBySlug', variables],
-    fetcher<ArticleBySlugQuery, ArticleBySlugQueryVariables>(
-      client,
-      ArticleBySlugDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-
-useArticleBySlugQuery.getKey = (variables: ArticleBySlugQueryVariables) => [
-  'ArticleBySlug',
-  variables,
-];
-useArticleBySlugQuery.fetcher = (
-  client: GraphQLClient,
-  variables: ArticleBySlugQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<ArticleBySlugQuery, ArticleBySlugQueryVariables>(
-    client,
-    ArticleBySlugDocument,
-    variables,
-    headers
-  );
 export const NewsPostsDocument = `
     query NewsPosts($limit: Int!, $start: Int!) {
   newsPosts(pagination: {limit: $limit, start: $start}) {
@@ -1156,35 +1079,30 @@ export const NewsPostsDocument = `
   }
 }
     `;
-export const useNewsPostsQuery = <TData = NewsPostsQuery, TError = unknown>(
-  client: GraphQLClient,
-  variables: NewsPostsQueryVariables,
-  options?: UseQueryOptions<NewsPostsQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<NewsPostsQuery, TError, TData>(
-    ['NewsPosts', variables],
-    fetcher<NewsPostsQuery, NewsPostsQueryVariables>(
-      client,
-      NewsPostsDocument,
-      variables,
-      headers
-    ),
-    options
-  );
 
-useNewsPostsQuery.getKey = (variables: NewsPostsQueryVariables) => [
-  'NewsPosts',
-  variables,
-];
-useNewsPostsQuery.fetcher = (
-  client: GraphQLClient,
-  variables: NewsPostsQueryVariables,
-  headers?: RequestInit['headers']
-) =>
-  fetcher<NewsPostsQuery, NewsPostsQueryVariables>(
-    client,
-    NewsPostsDocument,
-    variables,
-    headers
-  );
+const injectedRtkApi = api.injectEndpoints({
+  overrideExisting: module.hot?.status() === 'apply',
+  endpoints: (build) => ({
+    Article: build.query<ArticleQuery, ArticleQueryVariables | void>({
+      query: (variables) => ({ document: ArticleDocument, variables }),
+    }),
+    ArticleBySlug: build.query<ArticleBySlugQuery, ArticleBySlugQueryVariables>(
+      {
+        query: (variables) => ({ document: ArticleBySlugDocument, variables }),
+      }
+    ),
+    NewsPosts: build.query<NewsPostsQuery, NewsPostsQueryVariables>({
+      query: (variables) => ({ document: NewsPostsDocument, variables }),
+    }),
+  }),
+});
+
+export { injectedRtkApi as api };
+export const {
+  useArticleQuery,
+  useLazyArticleQuery,
+  useArticleBySlugQuery,
+  useLazyArticleBySlugQuery,
+  useNewsPostsQuery,
+  useLazyNewsPostsQuery,
+} = injectedRtkApi;

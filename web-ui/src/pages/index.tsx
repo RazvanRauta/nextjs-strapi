@@ -4,22 +4,15 @@
  *  Time: 02:09
  */
 
-import { GetStaticProps } from 'next';
-import { dehydrate, QueryClient } from 'react-query';
-
-import { graphQLClient } from '@/lib/graphql-client';
-
 import Layout from '@/components/Layout';
 import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 
 import { useNewsPostsQuery } from '@/generated';
+import { getNewsPosts, getRunningOperationPromises, wrapper } from '@/store';
 
 export default function IndexPage() {
-  const { data } = useNewsPostsQuery(graphQLClient, {
-    start: 0,
-    limit: 10,
-  });
+  const { data } = useNewsPostsQuery({ limit: 10, start: 0 });
   return (
     <Layout>
       <Seo templateTitle='Welcome' />
@@ -57,20 +50,12 @@ export default function IndexPage() {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const queryClient = new QueryClient();
+export const getStaticProps = wrapper.getStaticProps((store) => async () => {
+  store.dispatch(getNewsPosts.initiate({ limit: 10, start: 0 }));
 
-  await queryClient.prefetchQuery(
-    useNewsPostsQuery.getKey({ limit: 10, start: 0 }),
-    () => useNewsPostsQuery.fetcher(graphQLClient, { limit: 10, start: 0 })(),
-    {
-      staleTime: Infinity,
-    }
-  );
+  await Promise.all(getRunningOperationPromises());
 
   return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
+    props: {},
   };
-};
+});

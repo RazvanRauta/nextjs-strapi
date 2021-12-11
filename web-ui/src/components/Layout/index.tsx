@@ -11,9 +11,9 @@ export default function Layout({
 }) {
   // Put Header or Footer Here
   return (
-    <>
+    <div className='pt-2'>
       {preview && <AlertPreview />}
       {children}
-    </>
+    </div>
   );
 }

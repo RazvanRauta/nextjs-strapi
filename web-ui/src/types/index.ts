@@ -5,20 +5,29 @@
  */
 
 export interface ImageFormats {
-  large: ImageSize;
-  small: ImageSize;
-  medium: ImageSize;
-  thumbnail: ImageSize;
+  large: ImageSize | null;
+  small: ImageSize | null;
+  medium: ImageSize | null;
+  thumbnail: ImageSize | null;
 }
 
 export interface ImageSize {
-  ext: string;
-  url: string;
-  hash: string;
-  mime: string;
-  name: string;
+  ext: string | null;
+  url: string | null;
+  hash: string | null;
+  mime: string | null;
+  name: string | null;
   path: null;
-  size: number;
-  width: number;
-  height: number;
+  size: number | null;
+  width: number | null;
+  height: number | null;
+}
+
+export interface ParsedPost {
+  id: string | null;
+  title: string | null;
+  slug: string | null;
+  image: ImageFormats | null;
+  date: string | null;
+  text: string | null;
 }

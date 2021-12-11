@@ -9,15 +9,16 @@ import { GetStaticPaths } from 'next';
 import Error from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { okaidia as theme } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
+import useParsedArticle from '@/hooks/parsedPost';
+
 import Layout from '@/components/Layout';
 import Seo from '@/components/Seo';
 
-import { PublicationState, useArticleBySlugQuery } from '@/generated';
+import { PublicationState } from '@/generated';
 import {
   getNewsPosts,
   getPostBySlug,
@@ -34,21 +35,7 @@ export default function PostPage({ preview }: PostPageProps) {
   const router = useRouter();
   const slug = router.query?.slug;
 
-  const getSlug = useCallback(
-    () =>
-      typeof slug === 'string'
-        ? {
-            slug,
-            state: preview ? PublicationState.Preview : PublicationState.Live,
-          }
-        : {
-            slug: '',
-            state: preview ? PublicationState.Preview : PublicationState.Live,
-          },
-    [slug, preview]
-  );
-
-  const { data, error, isLoading } = useArticleBySlugQuery(getSlug());
+  const { parsedPost, error, isLoading } = useParsedArticle({ preview, slug });
 
   if (error) return <Error statusCode={500} />;
 
@@ -60,17 +47,11 @@ export default function PostPage({ preview }: PostPageProps) {
       </div>
     );
 
-  if (!data?.newsPosts?.data?.[0])
-    return <Error statusCode={401} title='Post was not found' />;
-
   return (
     <Layout preview={preview}>
       <Seo
-        templateTitle={data?.newsPosts?.data?.[0]?.attributes?.title || 'Post'}
-        image={
-          data?.newsPosts?.data?.[0]?.attributes?.image.data?.attributes
-            ?.formats?.medium.url
-        }
+        templateTitle={parsedPost?.title || 'Post'}
+        image={parsedPost?.image?.medium?.url || ''}
       />
 
       <main>
@@ -81,34 +62,41 @@ export default function PostPage({ preview }: PostPageProps) {
                 <ArrowLeftIcon className='w-10 h-10 hover:scale-x-125' />
               </a>
             </Link>
-            <article className='prose lg:prose-xl'>
-              <h1>{data?.newsPosts?.data?.[0]?.attributes?.title}</h1>
+            {parsedPost && (
+              <article className='prose lg:prose-xl'>
+                <h1>{parsedPost?.title}</h1>
 
-              <ReactMarkdown
-                components={{
-                  code({ node, inline, className, children, ref, ...props }) {
-                    const match = /language-(\w+)/.exec(className || '');
-                    const _notUsed = { node, ref };
-                    return !inline && match ? (
-                      <SyntaxHighlighter
-                        style={theme}
-                        language={match[1]}
-                        PreTag='div'
-                        {...props}
-                      >
-                        {String(children).replace(/\n$/, '') || ''}
-                      </SyntaxHighlighter>
-                    ) : (
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
-                    );
-                  },
-                }}
-              >
-                {data?.newsPosts?.data?.[0]?.attributes?.text || ''}
-              </ReactMarkdown>
-            </article>
+                <ReactMarkdown
+                  components={{
+                    code({ node, inline, className, children, ref, ...props }) {
+                      const match = /language-(\w+)/.exec(className || '');
+                      const _notUsed = { node, ref };
+                      return !inline && match ? (
+                        <SyntaxHighlighter
+                          style={theme}
+                          language={match[1]}
+                          PreTag='div'
+                          {...props}
+                        >
+                          {String(children).replace(/\n$/, '') || ''}
+                        </SyntaxHighlighter>
+                      ) : (
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >
+                  {parsedPost?.text || ''}
+                </ReactMarkdown>
+              </article>
+            )}
+            {!parsedPost && (
+              <div>
+                <h2>Post not Found</h2>
+              </div>
+            )}
           </div>
         </section>
       </main>

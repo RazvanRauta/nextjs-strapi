@@ -1,6 +1,5 @@
 /* eslint-disable  */
 import { api } from '@/lib/baseApi';
-import { ImageFormats } from '@/types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -857,7 +856,7 @@ export type ArticleQuery = {
                             attributes?:
                               | {
                                   __typename?: 'UploadFile';
-                                  formats?: ImageFormats | null | undefined;
+                                  formats?: any | null | undefined;
                                   width?: number | null | undefined;
                                   height?: number | null | undefined;
                                 }
@@ -908,7 +907,7 @@ export type ArticleBySlugQuery = {
                               __typename?: 'UploadFile';
                               width?: number | null | undefined;
                               height?: number | null | undefined;
-                              formats?: ImageFormats | null | undefined;
+                              formats?: any | null | undefined;
                             }
                           | null
                           | undefined;
@@ -988,7 +987,7 @@ export type NewsPostsQuery = {
                               __typename?: 'UploadFile';
                               width?: number | null | undefined;
                               height?: number | null | undefined;
-                              formats?: ImageFormats | null | undefined;
+                              formats?: any | null | undefined;
                             }
                           | null
                           | undefined;

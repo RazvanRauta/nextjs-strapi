@@ -7,9 +7,9 @@ generates:
       - 'typescript'
       - 'typescript-operations'
       - 'typescript-rtk-query':
-           importBaseApiFrom: '@/lib/baseApi'
-           exportHooks: true
-           overrideExisting: 'module.hot?.status() === "apply"'
+          importBaseApiFrom: '@/lib/baseApi'
+          exportHooks: true
+          overrideExisting: 'module.hot?.status() === "apply"'
 
   ./graphql.schema.json:
     plugins:

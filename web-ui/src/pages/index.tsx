@@ -4,6 +4,7 @@
  *  Time: 02:09
  */
 
+import Link from 'next/link';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
 
 import Layout from '@/components/Layout';
@@ -29,7 +30,11 @@ export default function IndexPage({ preview }: IndexPageProps): ReactElement {
             {data &&
               data.newsPosts?.data.map((post) => (
                 <article key={post.id} className='prose lg:prose-xl'>
-                  <h1>{post.attributes?.title}</h1>
+                  <Link prefetch href={`post/${post.attributes?.slug}`}>
+                    <a className='no-underline'>
+                      <h1>{post.attributes?.title}</h1>
+                    </a>
+                  </Link>
                   <NextImage
                     useSkeleton
                     className='w-80 h-80'

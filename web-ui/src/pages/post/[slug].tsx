@@ -4,8 +4,10 @@
  *  Time: 15:52
  */
 
+import { ArrowLeftIcon } from '@heroicons/react/solid';
 import { GetStaticPaths } from 'next';
 import Error from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -68,6 +70,11 @@ export default function PostPage({ preview }: PostPageProps) {
       <main>
         <section className=''>
           <div className='layout py-20 min-h-screen'>
+            <Link href={`/`}>
+              <a className='no-underline' title='Home'>
+                <ArrowLeftIcon className='w-10 h-10 hover:scale-x-125' />
+              </a>
+            </Link>
             <article className='prose lg:prose-xl'>
               <h1>{data?.newsPosts?.data?.[0]?.attributes?.title}</h1>
 

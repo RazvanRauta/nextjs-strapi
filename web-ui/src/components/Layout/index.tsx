@@ -1,6 +1,19 @@
 import * as React from 'react';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+import AlertPreview from '../AlertPreview';
+
+export default function Layout({
+  children,
+  preview,
+}: {
+  children: React.ReactNode;
+  preview: boolean | null;
+}) {
   // Put Header or Footer Here
-  return <>{children}</>;
+  return (
+    <>
+      {preview && <AlertPreview />}
+      {children}
+    </>
+  );
 }

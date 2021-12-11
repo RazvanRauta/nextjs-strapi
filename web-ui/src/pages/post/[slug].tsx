@@ -15,7 +15,7 @@ import { okaidia as theme } from 'react-syntax-highlighter/dist/cjs/styles/prism
 import Layout from '@/components/Layout';
 import Seo from '@/components/Seo';
 
-import { useArticleBySlugQuery } from '@/generated';
+import { PublicationState, useArticleBySlugQuery } from '@/generated';
 import {
   getNewsPosts,
   getPostBySlug,
@@ -24,29 +24,52 @@ import {
   wrapper,
 } from '@/store';
 
-export default function PostPage() {
+type PostPageProps = {
+  preview: boolean | null;
+};
+
+export default function PostPage({ preview }: PostPageProps) {
   const router = useRouter();
   const slug = router.query?.slug;
+
   const getSlug = useCallback(
-    () => (typeof slug === 'string' ? { slug } : { slug: '' }),
-    [slug]
+    () =>
+      typeof slug === 'string'
+        ? {
+            slug,
+            state: preview ? PublicationState.Preview : PublicationState.Live,
+          }
+        : {
+            slug: '',
+            state: preview ? PublicationState.Preview : PublicationState.Live,
+          },
+    [slug, preview]
   );
 
   const { data, error, isLoading } = useArticleBySlugQuery(getSlug());
 
   if (error) return <Error statusCode={500} />;
 
-  if (isLoading || router.isFallback) return <div>Loading</div>;
+  if (isLoading || router.isFallback)
+    return (
+      <div className='flex flex-col justify-center items-center w-screen h-screen'>
+        <div className='w-20 h-20 rounded-full border-t-4 border-b-4 border-green-900 animate-spin'></div>
+        <p className='mt-4'>Loading...</p>
+      </div>
+    );
+
+  if (!data?.newsPosts?.data?.[0])
+    return <Error statusCode={401} title='Post was not found' />;
 
   return (
-    <Layout>
+    <Layout preview={preview}>
       <Seo templateTitle='Post' />
 
       <main>
         <section className=''>
           <div className='layout py-20 min-h-screen'>
             <article className='prose lg:prose-xl'>
-              <h1>{data?.newsPosts?.data[0].attributes?.title}</h1>
+              <h1>{data?.newsPosts?.data?.[0]?.attributes?.title}</h1>
 
               <ReactMarkdown
                 components={{
@@ -70,7 +93,7 @@ export default function PostPage() {
                   },
                 }}
               >
-                {data?.newsPosts?.data[0].attributes?.text || ''}
+                {data?.newsPosts?.data?.[0]?.attributes?.text || ''}
               </ReactMarkdown>
             </article>
           </div>
@@ -102,16 +125,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps = wrapper.getStaticProps(
-  (store) => async (context) => {
-    const slug = context.params?.slug;
-    if (typeof slug === 'string') {
-      store.dispatch(getPostBySlug.initiate({ slug }));
+  (store) =>
+    async ({ params, preview = null }) => {
+      const slug = params?.slug;
+      if (typeof slug === 'string') {
+        store.dispatch(
+          getPostBySlug.initiate({
+            slug,
+            state: preview ? PublicationState.Preview : PublicationState.Live,
+          })
+        );
+      }
+
+      await Promise.all(getRunningOperationPromises());
+
+      return {
+        props: { preview },
+      };
     }
-
-    await Promise.all(getRunningOperationPromises());
-
-    return {
-      props: {},
-    };
-  }
 );

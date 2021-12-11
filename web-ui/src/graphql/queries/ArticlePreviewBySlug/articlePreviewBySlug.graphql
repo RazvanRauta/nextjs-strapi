@@ -1,0 +1,10 @@
+query ArticlePreviewBySlug($slug: String!, $state: PublicationState!) {
+  newsPosts(filters: { slug: { eq: $slug } }, publicationState: $state) {
+    data {
+      id
+      attributes {
+        slug
+      }
+    }
+  }
+}

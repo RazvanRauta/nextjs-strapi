@@ -27,5 +27,8 @@ export const {
   util: { getRunningOperationPromises },
 } = api;
 
-export const { NewsPosts: getNewsPosts, ArticleBySlug: getPostBySlug } =
-  api.endpoints;
+export const {
+  NewsPosts: getNewsPosts,
+  ArticleBySlug: getPostBySlug,
+  ArticlePreviewBySlug: getPostPreviewBySlug,
+} = api.endpoints;

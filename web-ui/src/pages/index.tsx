@@ -4,6 +4,8 @@
  *  Time: 02:09
  */
 
+import { ReactElement } from 'react-markdown/lib/react-markdown';
+
 import Layout from '@/components/Layout';
 import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
@@ -11,10 +13,14 @@ import Seo from '@/components/Seo';
 import { useNewsPostsQuery } from '@/generated';
 import { getNewsPosts, getRunningOperationPromises, wrapper } from '@/store';
 
-export default function IndexPage() {
+type IndexPageProps = {
+  preview: boolean | null;
+};
+
+export default function IndexPage({ preview }: IndexPageProps): ReactElement {
   const { data } = useNewsPostsQuery({ limit: 10, start: 0 });
   return (
-    <Layout>
+    <Layout preview={preview}>
       <Seo templateTitle='Welcome' />
 
       <main>
@@ -50,12 +56,15 @@ export default function IndexPage() {
   );
 }
 
-export const getStaticProps = wrapper.getStaticProps((store) => async () => {
-  store.dispatch(getNewsPosts.initiate({ limit: 10, start: 0 }));
+export const getStaticProps = wrapper.getStaticProps(
+  (store) =>
+    async ({ preview = null }) => {
+      store.dispatch(getNewsPosts.initiate({ limit: 10, start: 0 }));
 
-  await Promise.all(getRunningOperationPromises());
+      await Promise.all(getRunningOperationPromises());
 
-  return {
-    props: {},
-  };
-});
+      return {
+        props: { preview },
+      };
+    }
+);

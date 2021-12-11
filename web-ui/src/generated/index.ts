@@ -1,5 +1,6 @@
 /* eslint-disable  */
 import { api } from '@/lib/baseApi';
+import { ImageFormats } from '@/types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -856,7 +857,7 @@ export type ArticleQuery = {
                             attributes?:
                               | {
                                   __typename?: 'UploadFile';
-                                  formats?: Formats | null | undefined;
+                                  formats?: ImageFormats | null | undefined;
                                   width?: number | null | undefined;
                                   height?: number | null | undefined;
                                 }
@@ -879,6 +880,7 @@ export type ArticleQuery = {
 
 export type ArticleBySlugQueryVariables = Exact<{
   slug: Scalars['String'];
+  state: PublicationState;
 }>;
 
 export type ArticleBySlugQuery = {
@@ -906,7 +908,7 @@ export type ArticleBySlugQuery = {
                               __typename?: 'UploadFile';
                               width?: number | null | undefined;
                               height?: number | null | undefined;
-                              formats?: Formats | null | undefined;
+                              formats?: ImageFormats | null | undefined;
                             }
                           | null
                           | undefined;
@@ -923,29 +925,33 @@ export type ArticleBySlugQuery = {
     | undefined;
 };
 
+export type ArticlePreviewBySlugQueryVariables = Exact<{
+  slug: Scalars['String'];
+  state: PublicationState;
+}>;
+
+export type ArticlePreviewBySlugQuery = {
+  __typename?: 'Query';
+  newsPosts?:
+    | {
+        __typename?: 'NewsPostEntityResponseCollection';
+        data: Array<{
+          __typename?: 'NewsPostEntity';
+          id?: string | null | undefined;
+          attributes?:
+            | { __typename?: 'NewsPost'; slug: string }
+            | null
+            | undefined;
+        }>;
+      }
+    | null
+    | undefined;
+};
+
 export type NewsPostsQueryVariables = Exact<{
   limit: Scalars['Int'];
   start: Scalars['Int'];
 }>;
-
-export interface Formats {
-  large: ImageSize;
-  small: ImageSize;
-  medium: ImageSize;
-  thumbnail: ImageSize;
-}
-
-export interface ImageSize {
-  ext: string;
-  url: string;
-  hash: string;
-  mime: string;
-  name: string;
-  path: null;
-  size: number;
-  width: number;
-  height: number;
-}
 
 export type NewsPostsQuery = {
   __typename?: 'Query';
@@ -982,7 +988,7 @@ export type NewsPostsQuery = {
                               __typename?: 'UploadFile';
                               width?: number | null | undefined;
                               height?: number | null | undefined;
-                              formats?: Formats | null | undefined;
+                              formats?: ImageFormats | null | undefined;
                             }
                           | null
                           | undefined;
@@ -1024,8 +1030,8 @@ export const ArticleDocument = `
 }
     `;
 export const ArticleBySlugDocument = `
-    query ArticleBySlug($slug: String!) {
-  newsPosts(filters: {slug: {eq: $slug}}) {
+    query ArticleBySlug($slug: String!, $state: PublicationState!) {
+  newsPosts(filters: {slug: {eq: $slug}}, publicationState: $state) {
     data {
       id
       attributes {
@@ -1042,6 +1048,18 @@ export const ArticleBySlugDocument = `
             }
           }
         }
+      }
+    }
+  }
+}
+    `;
+export const ArticlePreviewBySlugDocument = `
+    query ArticlePreviewBySlug($slug: String!, $state: PublicationState!) {
+  newsPosts(filters: {slug: {eq: $slug}}, publicationState: $state) {
+    data {
+      id
+      attributes {
+        slug
       }
     }
   }
@@ -1091,6 +1109,15 @@ const injectedRtkApi = api.injectEndpoints({
         query: (variables) => ({ document: ArticleBySlugDocument, variables }),
       }
     ),
+    ArticlePreviewBySlug: build.query<
+      ArticlePreviewBySlugQuery,
+      ArticlePreviewBySlugQueryVariables
+    >({
+      query: (variables) => ({
+        document: ArticlePreviewBySlugDocument,
+        variables,
+      }),
+    }),
     NewsPosts: build.query<NewsPostsQuery, NewsPostsQueryVariables>({
       query: (variables) => ({ document: NewsPostsDocument, variables }),
     }),
@@ -1103,6 +1130,8 @@ export const {
   useLazyArticleQuery,
   useArticleBySlugQuery,
   useLazyArticleBySlugQuery,
+  useArticlePreviewBySlugQuery,
+  useLazyArticlePreviewBySlugQuery,
   useNewsPostsQuery,
   useLazyNewsPostsQuery,
 } = injectedRtkApi;

@@ -77,10 +77,10 @@
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,}": [
       "eslint --max-warnings=0",
-      "prettier -w"
+      "prettier --config .prettierrc.js --ignore-path .prettierignore -w"
     ],
     "src/**/*.{json,css,scss,md}": [
-      "prettier -w"
+      "prettier --config .prettierrc.js --ignore-path .prettierignore -w"
     ]
   }
 }

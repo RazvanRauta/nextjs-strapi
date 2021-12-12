@@ -54,6 +54,8 @@ export default function PostPage({ preview }: PostPageProps) {
         description={parsedPost?.excerpt || ''}
         author={parsedPost?.author?.name || ''}
         date={parsedPost?.date}
+        isArticle
+        articleBody={parsedPost?.content}
       />
 
       <main>

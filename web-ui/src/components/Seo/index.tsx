@@ -1,14 +1,20 @@
+/**
+ *  @author: Razvan Rauta
+ *  Date: Dec 10 2021
+ *  Time: 01:55
+ */
+
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-
-import { openGraph } from '@/lib/helper';
+import { jsonLdScriptProps } from 'react-schemaorg';
+import { Article, WebPage } from 'schema-dts';
 
 const defaultMeta = {
   title: 'NextJs with Strapi',
   siteName: 'NextJs with Strapi',
   description: 'A wonderful website',
   url: 'https://nextjs.rrazvan.dev',
-  image: 'https://theodorusclarence.com/favicon/large-og.jpg',
+  image: 'https://nextjs.rrazvan.dev/meta/meta-image.png',
   type: 'website',
   robots: 'follow, index',
   author: 'RRazvan',
@@ -18,6 +24,8 @@ type SeoProps = {
   date?: string | null;
   templateTitle?: string;
   author?: string | null;
+  isArticle?: boolean;
+  articleBody?: string | null;
 } & Partial<typeof defaultMeta>;
 
 export default function Seo(props: SeoProps) {
@@ -26,19 +34,55 @@ export default function Seo(props: SeoProps) {
     ...defaultMeta,
     ...props,
   };
+
   meta['title'] = props.templateTitle
     ? `${props.templateTitle} | ${meta.siteName}`
     : meta.title;
 
-  // Use siteName if there is templateTitle
-  // but show full title if there is none
-  meta.image = !props.image
-    ? openGraph({
-        description: meta.description,
-        siteName: props.templateTitle ? meta.siteName : meta.title,
-        templateTitle: props.templateTitle,
-      })
-    : props.image;
+  const jsonLtdWebPage = jsonLdScriptProps<WebPage>({
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url: `${meta.url}${router.asPath}`,
+    description: meta.description,
+    name: props.templateTitle,
+    publisher: {
+      '@type': 'Organization',
+      name: 'RRazvan.dev',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${meta.url}/favicon/apple-icon-180x180.png`,
+      },
+    },
+  });
+
+  const jsonLtdArticle = jsonLdScriptProps<Article>({
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    url: `${meta.url}${router.asPath}`,
+    datePublished: meta.date || new Date().toISOString(),
+    dateModified: meta.date || new Date().toISOString(),
+    dateCreated: meta.date || new Date().toISOString(),
+    description: meta.description,
+    headline: meta.title,
+    image: {
+      '@type': 'ImageObject',
+      url: meta.image,
+    },
+    author: {
+      '@type': 'Person',
+      name: meta.author,
+      url: 'https://rrazvan.dev',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'RRazvan.dev',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${meta.url}/favicon/apple-icon-180x180.png`,
+      },
+    },
+    articleBody: meta.articleBody || '',
+  });
 
   return (
     <Head>
@@ -81,6 +125,11 @@ export default function Seo(props: SeoProps) {
         content='/favicon/ms-icon-144x144.png'
       />
       <meta name='theme-color' content='#ffffff' />
+      {meta.isArticle ? (
+        <script {...jsonLtdArticle} />
+      ) : (
+        <script {...jsonLtdWebPage} />
+      )}
     </Head>
   );
 }
@@ -92,8 +141,6 @@ type Favicons = {
   type?: string;
 };
 
-// !STARTERCONF this is the default favicon, you can generate your own from https://www.favicon-generator.org/
-// then replace the whole /public/favicon folder
 const favicons: Array<Favicons> = [
   {
     rel: 'apple-touch-icon',

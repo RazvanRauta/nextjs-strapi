@@ -26,9 +26,3 @@ export const wrapper = createWrapper<AppStore>(makeStore);
 export const {
   util: { getRunningOperationPromises },
 } = api;
-
-export const {
-  NewsPosts: getNewsPosts,
-  ArticleBySlug: getPostBySlug,
-  ArticlePreviewBySlug: getPostPreviewBySlug,
-} = api.endpoints;

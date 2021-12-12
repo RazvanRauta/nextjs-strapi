@@ -4,10 +4,12 @@
  * @ Time: 19:32
  */
 
+import consola from 'consola';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { PublicationState } from '@/generated';
-import { getPostPreviewBySlug, makeStore } from '@/store';
+import { makeStore } from '@/store';
+import { postsApiRequests } from '@/store/post/actions';
 
 export default async function preview(
   req: NextApiRequest,
@@ -25,16 +27,23 @@ export default async function preview(
 
   const store = makeStore();
   if (typeof req.query.slug === 'string') {
-    post = await store.dispatch(
-      getPostPreviewBySlug.initiate({
-        slug: req.query.slug,
-        state: PublicationState.Preview,
-      })
-    );
+    try {
+      post = await store.dispatch(
+        postsApiRequests.VerifyIfPostExists.initiate({
+          slug: req.query.slug,
+          state: PublicationState.Preview,
+        })
+      );
+    } catch (error) {
+      consola.error(error);
+    }
   }
 
   // If the slug doesn't exist prevent preview mode from being enabled
-  if (!post?.data?.newsPosts?.data[0].id) {
+  if (
+    !post?.data?.posts?.data?.[0]?.attributes?.slug ||
+    post?.data?.posts?.data?.[0]?.attributes?.slug !== req.query.slug
+  ) {
     return res.status(401).json({ message: 'Invalid slug' });
   }
 
@@ -44,7 +53,7 @@ export default async function preview(
   // Redirect to the path from the fetched post
   // We don't redirect to req.query.slug as that might lead to open redirect vulnerabilities
   res.writeHead(307, {
-    Location: `/post/${post.data?.newsPosts?.data[0].attributes?.slug}`,
+    Location: `/post/${post.data?.posts?.data[0].attributes?.slug}`,
   });
   res.end();
 }

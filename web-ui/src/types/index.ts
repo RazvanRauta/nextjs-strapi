@@ -23,11 +23,18 @@ export interface ImageSize {
   height: number | null;
 }
 
+export interface Author {
+  name: string | null;
+  avatar: ImageFormats | null;
+}
+
 export interface ParsedPost {
   id: string | null;
   title: string | null;
+  excerpt: string | null;
   slug: string | null;
-  image: ImageFormats | null;
+  cover: ImageFormats | null;
   date: string | null;
-  text: string | null;
+  content: string | null;
+  author: Author | null;
 }

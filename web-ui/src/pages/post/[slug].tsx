@@ -5,6 +5,7 @@
  */
 
 import { ArrowLeftIcon } from '@heroicons/react/solid';
+import consola from 'consola';
 import { GetStaticPaths } from 'next';
 import Error from 'next/error';
 import Link from 'next/link';
@@ -19,13 +20,8 @@ import Layout from '@/components/Layout';
 import Seo from '@/components/Seo';
 
 import { PublicationState } from '@/generated';
-import {
-  getNewsPosts,
-  getPostBySlug,
-  getRunningOperationPromises,
-  makeStore,
-  wrapper,
-} from '@/store';
+import { getRunningOperationPromises, makeStore, wrapper } from '@/store';
+import { postsApiRequests } from '@/store/post/actions';
 
 type PostPageProps = {
   preview: boolean | null;
@@ -37,7 +33,10 @@ export default function PostPage({ preview }: PostPageProps) {
 
   const { parsedPost, error, isLoading } = useParsedArticle({ preview, slug });
 
-  if (error) return <Error statusCode={500} />;
+  if (error) {
+    consola.error(error);
+    return <Error statusCode={500} />;
+  }
 
   if (isLoading || router.isFallback)
     return (
@@ -51,7 +50,10 @@ export default function PostPage({ preview }: PostPageProps) {
     <Layout preview={preview}>
       <Seo
         templateTitle={parsedPost?.title || 'Post'}
-        image={parsedPost?.image?.medium?.url || ''}
+        image={parsedPost?.cover?.medium?.url || ''}
+        description={parsedPost?.excerpt || ''}
+        author={parsedPost?.author?.name || ''}
+        date={parsedPost?.date}
       />
 
       <main>
@@ -88,7 +90,7 @@ export default function PostPage({ preview }: PostPageProps) {
                     },
                   }}
                 >
-                  {parsedPost?.text || ''}
+                  {parsedPost?.content || ''}
                 </ReactMarkdown>
               </article>
             )}
@@ -106,17 +108,21 @@ export default function PostPage({ preview }: PostPageProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const store = makeStore();
-  const result = await store.dispatch(
-    getNewsPosts.initiate({ start: 0, limit: 10000 })
-  );
+  try {
+    const result = await store.dispatch(
+      postsApiRequests.PostsWithSlug.initiate({ start: 0, limit: 10000 })
+    );
 
-  if (result?.data?.newsPosts?.data) {
-    return {
-      paths: result.data?.newsPosts?.data.map((p) => ({
-        params: { slug: p.attributes?.slug || '' },
-      })),
-      fallback: true,
-    };
+    if (result?.data?.posts?.data) {
+      return {
+        paths: result.data?.posts?.data.map((p) => ({
+          params: { slug: p.attributes?.slug },
+        })),
+        fallback: true,
+      };
+    }
+  } catch (error) {
+    consola.error(error);
   }
 
   return {
@@ -129,16 +135,20 @@ export const getStaticProps = wrapper.getStaticProps(
   (store) =>
     async ({ params, preview = null }) => {
       const slug = params?.slug;
-      if (typeof slug === 'string') {
-        store.dispatch(
-          getPostBySlug.initiate({
-            slug,
-            state: preview ? PublicationState.Preview : PublicationState.Live,
-          })
-        );
-      }
+      try {
+        if (typeof slug === 'string') {
+          store.dispatch(
+            postsApiRequests.PostBySlug.initiate({
+              slug,
+              state: preview ? PublicationState.Preview : PublicationState.Live,
+            })
+          );
+        }
 
-      await Promise.all(getRunningOperationPromises());
+        await Promise.all(getRunningOperationPromises());
+      } catch (error) {
+        consola.error(error);
+      }
 
       return {
         props: { preview },

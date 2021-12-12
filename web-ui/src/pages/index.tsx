@@ -4,17 +4,19 @@
  *  Time: 02:09
  */
 
+import consola from 'consola';
 import Error from 'next/error';
 import Link from 'next/link';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
 
-import useParsedNewsPosts from '@/hooks/parsedNewsPosts';
+import useParsedPosts from '@/hooks/parsedPosts';
 
 import Layout from '@/components/Layout';
 import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 
-import { getNewsPosts, getRunningOperationPromises, wrapper } from '@/store';
+import { getRunningOperationPromises, wrapper } from '@/store';
+import { postsApiRequests } from '@/store/post/actions';
 
 type IndexPageProps = {
   preview: boolean | null;
@@ -22,15 +24,18 @@ type IndexPageProps = {
 
 export default function IndexPage({ preview }: IndexPageProps): ReactElement {
   const {
-    data: { parsedNewsPosts },
+    data: { parsedPosts },
     error,
     isLoading,
-  } = useParsedNewsPosts({
+  } = useParsedPosts({
     limit: 10,
     start: 0,
   });
 
-  if (error) return <Error statusCode={500} />;
+  if (error) {
+    consola.error(error);
+    return <Error statusCode={500} />;
+  }
 
   if (isLoading)
     return (
@@ -47,35 +52,49 @@ export default function IndexPage({ preview }: IndexPageProps): ReactElement {
       <main>
         <section className=''>
           <div className='layout flex flex-col justify-center items-center min-h-screen text-center'>
-            {parsedNewsPosts &&
-              parsedNewsPosts.length &&
-              parsedNewsPosts.map((post) => (
-                <section key={post.id} className='prose lg:prose-xl'>
-                  <Link prefetch href={`post/${post.slug}`}>
-                    <a className='no-underline'>
-                      <h1>{post.title}</h1>
-                    </a>
-                  </Link>
-                  {post.image?.medium && (
-                    <NextImage
-                      useSkeleton
-                      sizes=''
-                      className='relative max-w-md'
-                      imgClassName='object-contain'
-                      src={post.image.medium?.url || ''}
-                      width={post.image.medium?.width || ''}
-                      height={post.image.medium?.height || ''}
-                      alt={post.title || ''}
-                      priority
-                    />
-                  )}
-                </section>
-              ))}
-            {!parsedNewsPosts?.length && (
+            {parsedPosts && parsedPosts.length
+              ? parsedPosts.map((post) => (
+                  <section key={post.id} className='prose lg:prose-xl'>
+                    <Link prefetch href={`post/${post.slug}`}>
+                      <a className='no-underline'>
+                        <h1>{post.title}</h1>
+                      </a>
+                    </Link>
+                    {post.cover?.medium && (
+                      <NextImage
+                        useSkeleton
+                        sizes=''
+                        className='relative max-w-md'
+                        imgClassName='object-contain'
+                        src={post.cover.medium?.url || ''}
+                        width={post.cover.medium?.width || ''}
+                        height={post.cover.medium?.height || ''}
+                        alt={post.title || ''}
+                        priority
+                      />
+                    )}
+                    {post.excerpt && <p>{post.excerpt}</p>}
+                    {post.author && (
+                      <div>
+                        <p>Written By: {post.author.name}</p>
+                        {post.author.avatar && (
+                          <NextImage
+                            src={post.author.avatar.thumbnail?.url || ''}
+                            width={150}
+                            height={150}
+                            alt='Author'
+                          />
+                        )}
+                      </div>
+                    )}
+                  </section>
+                ))
+              : null}
+            {!parsedPosts?.length ? (
               <div>
                 <h2>No posts were found </h2>
               </div>
-            )}
+            ) : null}
           </div>
         </section>
       </main>
@@ -86,9 +105,15 @@ export default function IndexPage({ preview }: IndexPageProps): ReactElement {
 export const getStaticProps = wrapper.getStaticProps(
   (store) =>
     async ({ preview = null }) => {
-      store.dispatch(getNewsPosts.initiate({ limit: 10, start: 0 }));
+      try {
+        store.dispatch(
+          postsApiRequests.PostsPaginated.initiate({ limit: 10, start: 0 })
+        );
 
-      await Promise.all(getRunningOperationPromises());
+        await Promise.all(getRunningOperationPromises());
+      } catch (error) {
+        consola.error(error);
+      }
 
       return {
         props: { preview },

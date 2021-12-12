@@ -25,6 +25,7 @@
     "@reduxjs/toolkit": "^1.7.0",
     "@rtk-query/graphql-request-base-query": "^1.0.3",
     "clsx": "^1.1.1",
+    "consola": "^2.15.3",
     "graphql": "^16.1.0",
     "graphql-request": "^3.7.0",
     "next": "^12.0.7",

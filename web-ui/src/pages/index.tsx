@@ -9,12 +9,13 @@ import Error from 'next/error';
 import Link from 'next/link';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
 
-import useParsedPosts from '@/hooks/parsedPosts';
+import { parsePosts } from '@/lib/parser';
 
 import Layout from '@/components/Layout';
 import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 
+import { usePostsPaginatedQuery } from '@/generated';
 import { getRunningOperationPromises, wrapper } from '@/store';
 import { postsApiRequests } from '@/store/post/actions';
 
@@ -23,27 +24,26 @@ type IndexPageProps = {
 };
 
 export default function IndexPage({ preview }: IndexPageProps): ReactElement {
-  const {
-    data: { parsedPosts },
-    error,
-    isLoading,
-  } = useParsedPosts({
-    limit: 10,
-    start: 0,
-  });
+  const { data, error, isLoading, isFetching, isError } =
+    usePostsPaginatedQuery({
+      limit: 10,
+      start: 0,
+    });
 
-  if (error) {
-    consola.error(error);
+  if (isError) {
+    consola.error(error || 'Unknown error');
     return <Error statusCode={500} />;
   }
 
-  if (isLoading)
+  if (isLoading || isFetching)
     return (
       <div className='flex flex-col justify-center items-center w-screen h-screen'>
         <div className='w-20 h-20 rounded-full border-t-4 border-b-4 border-green-900 animate-spin'></div>
         <p className='mt-4'>Loading...</p>
       </div>
     );
+
+  const parsedPosts = parsePosts(data);
 
   return (
     <Layout preview={preview}>

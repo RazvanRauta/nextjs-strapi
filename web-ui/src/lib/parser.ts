@@ -4,9 +4,14 @@
  * @ Time: 23:14
  */
 
-import { PostBySlugQuery, PostEntity, PostsPaginatedQuery } from '@/generated';
+import {
+  PostBySlugQuery,
+  PostEntity,
+  PostsPaginatedQuery,
+  PublicationState,
+} from '@/generated';
 
-import { ImageFormats, ParsedPost } from '@/types';
+import { ImageFormats, ParsedPost, SlugAndPreview } from '@/types';
 
 export function parsePost({ id, attributes }: PostEntity): ParsedPost {
   const cover: ImageFormats = {
@@ -59,4 +64,16 @@ export function parsePosts(
   }
 
   return [];
+}
+
+export function getQueryVariables({ slug, preview }: SlugAndPreview) {
+  return typeof slug === 'string'
+    ? {
+        slug,
+        state: preview ? PublicationState.Preview : PublicationState.Live,
+      }
+    : {
+        slug: '',
+        state: preview ? PublicationState.Preview : PublicationState.Live,
+      };
 }

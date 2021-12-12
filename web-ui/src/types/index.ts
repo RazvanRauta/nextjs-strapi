@@ -38,3 +38,8 @@ export interface ParsedPost {
   content: string | null;
   author: Author | null;
 }
+
+export type SlugAndPreview = {
+  slug?: string | string[];
+  preview?: boolean | null;
+};

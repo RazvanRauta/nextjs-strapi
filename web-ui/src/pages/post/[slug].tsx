@@ -14,12 +14,12 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { okaidia as theme } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
-import useParsedArticle from '@/hooks/parsedPost';
+import { getQueryVariables, parsePosts } from '@/lib/parser';
 
 import Layout from '@/components/Layout';
 import Seo from '@/components/Seo';
 
-import { PublicationState } from '@/generated';
+import { PublicationState, usePostBySlugQuery } from '@/generated';
 import { getRunningOperationPromises, makeStore, wrapper } from '@/store';
 import { postsApiRequests } from '@/store/post/actions';
 
@@ -31,20 +31,24 @@ export default function PostPage({ preview }: PostPageProps) {
   const router = useRouter();
   const slug = router.query?.slug;
 
-  const { parsedPost, error, isLoading } = useParsedArticle({ preview, slug });
+  const { data, error, isLoading, isFetching, isError } = usePostBySlugQuery(
+    getQueryVariables({ preview, slug })
+  );
 
-  if (error) {
-    consola.error(error);
+  if (isError) {
+    consola.error(error || 'Unknown error');
     return <Error statusCode={500} />;
   }
 
-  if (isLoading || router.isFallback)
+  if (isLoading || router.isFallback || isFetching)
     return (
       <div className='flex flex-col justify-center items-center w-screen h-screen'>
         <div className='w-20 h-20 rounded-full border-t-4 border-b-4 border-green-900 animate-spin'></div>
         <p className='mt-4'>Loading...</p>
       </div>
     );
+
+  const parsedPost = parsePosts(data)[0];
 
   return (
     <Layout preview={preview}>
@@ -63,7 +67,7 @@ export default function PostPage({ preview }: PostPageProps) {
           <div className='layout py-20 min-h-screen'>
             <Link href={`/`}>
               <a className='no-underline' title='Home'>
-                <ArrowLeftIcon className='w-10 h-10 hover:scale-x-125' />
+                <ArrowLeftIcon className='w-10 h-10 duration-200 hover:scale-125' />
               </a>
             </Link>
             {parsedPost && (

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 import { parsePosts } from '@/lib/parser';
 
-import { PublicationState, useArticleBySlugQuery } from '@/generated';
+import { PublicationState, usePostBySlugQuery } from '@/generated';
 
 import { ParsedPost } from '@/types/index';
 
@@ -28,7 +28,7 @@ const getSlug = ({ slug, preview }: SlugAndPreview) =>
       };
 
 export default function useParsedArticle(props: SlugAndPreview) {
-  const { data, error, isLoading } = useArticleBySlugQuery(getSlug(props));
+  const { data, error, isLoading } = usePostBySlugQuery(getSlug(props));
   const [parsedPost, setParsedPost] = useState<ParsedPost>();
 
   useEffect(() => {

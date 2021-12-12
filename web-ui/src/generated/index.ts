@@ -28,6 +28,59 @@ export type Scalars = {
   Upload: any;
 };
 
+export type Author = {
+  __typename?: 'Author';
+  avatar: UploadFileEntityResponse;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  name: Scalars['String'];
+  posts?: Maybe<PostRelationResponseCollection>;
+  publishedAt?: Maybe<Scalars['DateTime']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type AuthorPostsArgs = {
+  filters?: InputMaybe<PostFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationState?: InputMaybe<PublicationState>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type AuthorEntity = {
+  __typename?: 'AuthorEntity';
+  attributes?: Maybe<Author>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type AuthorEntityResponse = {
+  __typename?: 'AuthorEntityResponse';
+  data?: Maybe<AuthorEntity>;
+};
+
+export type AuthorEntityResponseCollection = {
+  __typename?: 'AuthorEntityResponseCollection';
+  data: Array<AuthorEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type AuthorFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<AuthorFiltersInput>>>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  id?: InputMaybe<IdFilterInput>;
+  name?: InputMaybe<StringFilterInput>;
+  not?: InputMaybe<AuthorFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<AuthorFiltersInput>>>;
+  posts?: InputMaybe<PostFiltersInput>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type AuthorInput = {
+  avatar?: InputMaybe<Scalars['ID']>;
+  name?: InputMaybe<Scalars['String']>;
+  posts?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  publishedAt?: InputMaybe<Scalars['DateTime']>;
+};
+
 export type BooleanFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['Boolean']>>>;
   between?: InputMaybe<Array<InputMaybe<Scalars['Boolean']>>>;
@@ -127,8 +180,9 @@ export type FloatFilterInput = {
 };
 
 export type GenericMorph =
+  | Author
   | I18NLocale
-  | NewsPost
+  | Post
   | UploadFile
   | UsersPermissionsPermission
   | UsersPermissionsRole
@@ -241,13 +295,15 @@ export type JsonFilterInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createNewsPost?: Maybe<NewsPostEntityResponse>;
+  createAuthor?: Maybe<AuthorEntityResponse>;
+  createPost?: Maybe<PostEntityResponse>;
   createUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Create a new role */
   createUsersPermissionsRole?: Maybe<UsersPermissionsCreateRolePayload>;
   /** Create a new user */
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse;
-  deleteNewsPost?: Maybe<NewsPostEntityResponse>;
+  deleteAuthor?: Maybe<AuthorEntityResponse>;
+  deletePost?: Maybe<PostEntityResponse>;
   deleteUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Delete an existing role */
   deleteUsersPermissionsRole?: Maybe<UsersPermissionsDeleteRolePayload>;
@@ -264,8 +320,9 @@ export type Mutation = {
   removeFile?: Maybe<UploadFileEntityResponse>;
   /** Reset user password. Confirm with a code (resetToken from forgotPassword) */
   resetPassword?: Maybe<UsersPermissionsLoginPayload>;
+  updateAuthor?: Maybe<AuthorEntityResponse>;
   updateFileInfo: UploadFileEntityResponse;
-  updateNewsPost?: Maybe<NewsPostEntityResponse>;
+  updatePost?: Maybe<PostEntityResponse>;
   updateUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Update an existing role */
   updateUsersPermissionsRole?: Maybe<UsersPermissionsUpdateRolePayload>;
@@ -274,8 +331,12 @@ export type Mutation = {
   upload: UploadFileEntityResponse;
 };
 
-export type MutationCreateNewsPostArgs = {
-  data: NewsPostInput;
+export type MutationCreateAuthorArgs = {
+  data: AuthorInput;
+};
+
+export type MutationCreatePostArgs = {
+  data: PostInput;
 };
 
 export type MutationCreateUploadFileArgs = {
@@ -290,7 +351,11 @@ export type MutationCreateUsersPermissionsUserArgs = {
   data: UsersPermissionsUserInput;
 };
 
-export type MutationDeleteNewsPostArgs = {
+export type MutationDeleteAuthorArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationDeletePostArgs = {
   id: Scalars['ID'];
 };
 
@@ -339,13 +404,18 @@ export type MutationResetPasswordArgs = {
   passwordConfirmation: Scalars['String'];
 };
 
+export type MutationUpdateAuthorArgs = {
+  data: AuthorInput;
+  id: Scalars['ID'];
+};
+
 export type MutationUpdateFileInfoArgs = {
   id: Scalars['ID'];
   info?: InputMaybe<FileInfoInput>;
 };
 
-export type MutationUpdateNewsPostArgs = {
-  data: NewsPostInput;
+export type MutationUpdatePostArgs = {
+  data: PostInput;
   id: Scalars['ID'];
 };
 
@@ -372,58 +442,6 @@ export type MutationUploadArgs = {
   refId?: InputMaybe<Scalars['ID']>;
 };
 
-export type NewsPost = {
-  __typename?: 'NewsPost';
-  createdAt?: Maybe<Scalars['DateTime']>;
-  date: Scalars['Date'];
-  image: UploadFileEntityResponse;
-  publishedAt?: Maybe<Scalars['DateTime']>;
-  slug: Scalars['String'];
-  text: Scalars['String'];
-  title?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-};
-
-export type NewsPostEntity = {
-  __typename?: 'NewsPostEntity';
-  attributes?: Maybe<NewsPost>;
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type NewsPostEntityResponse = {
-  __typename?: 'NewsPostEntityResponse';
-  data?: Maybe<NewsPostEntity>;
-};
-
-export type NewsPostEntityResponseCollection = {
-  __typename?: 'NewsPostEntityResponseCollection';
-  data: Array<NewsPostEntity>;
-  meta: ResponseCollectionMeta;
-};
-
-export type NewsPostFiltersInput = {
-  and?: InputMaybe<Array<InputMaybe<NewsPostFiltersInput>>>;
-  createdAt?: InputMaybe<DateTimeFilterInput>;
-  date?: InputMaybe<DateFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
-  not?: InputMaybe<NewsPostFiltersInput>;
-  or?: InputMaybe<Array<InputMaybe<NewsPostFiltersInput>>>;
-  publishedAt?: InputMaybe<DateTimeFilterInput>;
-  slug?: InputMaybe<StringFilterInput>;
-  text?: InputMaybe<StringFilterInput>;
-  title?: InputMaybe<StringFilterInput>;
-  updatedAt?: InputMaybe<DateTimeFilterInput>;
-};
-
-export type NewsPostInput = {
-  date?: InputMaybe<Scalars['Date']>;
-  image?: InputMaybe<Scalars['ID']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']>;
-  slug?: InputMaybe<Scalars['String']>;
-  text?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
-};
-
 export type Pagination = {
   __typename?: 'Pagination';
   page: Scalars['Int'];
@@ -439,6 +457,69 @@ export type PaginationArg = {
   start?: InputMaybe<Scalars['Int']>;
 };
 
+export type Post = {
+  __typename?: 'Post';
+  author?: Maybe<AuthorEntityResponse>;
+  content: Scalars['String'];
+  cover: UploadFileEntityResponse;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  date?: Maybe<Scalars['Date']>;
+  excerpt: Scalars['String'];
+  publishedAt?: Maybe<Scalars['DateTime']>;
+  slug: Scalars['String'];
+  title: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type PostEntity = {
+  __typename?: 'PostEntity';
+  attributes?: Maybe<Post>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type PostEntityResponse = {
+  __typename?: 'PostEntityResponse';
+  data?: Maybe<PostEntity>;
+};
+
+export type PostEntityResponseCollection = {
+  __typename?: 'PostEntityResponseCollection';
+  data: Array<PostEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type PostFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<PostFiltersInput>>>;
+  author?: InputMaybe<AuthorFiltersInput>;
+  content?: InputMaybe<StringFilterInput>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  date?: InputMaybe<DateFilterInput>;
+  excerpt?: InputMaybe<StringFilterInput>;
+  id?: InputMaybe<IdFilterInput>;
+  not?: InputMaybe<PostFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<PostFiltersInput>>>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
+  slug?: InputMaybe<StringFilterInput>;
+  title?: InputMaybe<StringFilterInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type PostInput = {
+  author?: InputMaybe<Scalars['ID']>;
+  content?: InputMaybe<Scalars['String']>;
+  cover?: InputMaybe<Scalars['ID']>;
+  date?: InputMaybe<Scalars['Date']>;
+  excerpt?: InputMaybe<Scalars['String']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']>;
+  slug?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
+};
+
+export type PostRelationResponseCollection = {
+  __typename?: 'PostRelationResponseCollection';
+  data: Array<PostEntity>;
+};
+
 export enum PublicationState {
   Live = 'LIVE',
   Preview = 'PREVIEW',
@@ -446,17 +527,30 @@ export enum PublicationState {
 
 export type Query = {
   __typename?: 'Query';
+  author?: Maybe<AuthorEntityResponse>;
+  authors?: Maybe<AuthorEntityResponseCollection>;
   i18NLocale?: Maybe<I18NLocaleEntityResponse>;
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>;
   me?: Maybe<UsersPermissionsMe>;
-  newsPost?: Maybe<NewsPostEntityResponse>;
-  newsPosts?: Maybe<NewsPostEntityResponseCollection>;
+  post?: Maybe<PostEntityResponse>;
+  posts?: Maybe<PostEntityResponseCollection>;
   uploadFile?: Maybe<UploadFileEntityResponse>;
   uploadFiles?: Maybe<UploadFileEntityResponseCollection>;
   usersPermissionsRole?: Maybe<UsersPermissionsRoleEntityResponse>;
   usersPermissionsRoles?: Maybe<UsersPermissionsRoleEntityResponseCollection>;
   usersPermissionsUser?: Maybe<UsersPermissionsUserEntityResponse>;
   usersPermissionsUsers?: Maybe<UsersPermissionsUserEntityResponseCollection>;
+};
+
+export type QueryAuthorArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+export type QueryAuthorsArgs = {
+  filters?: InputMaybe<AuthorFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationState?: InputMaybe<PublicationState>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 export type QueryI18NLocaleArgs = {
@@ -469,12 +563,12 @@ export type QueryI18NLocalesArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
-export type QueryNewsPostArgs = {
+export type QueryPostArgs = {
   id?: InputMaybe<Scalars['ID']>;
 };
 
-export type QueryNewsPostsArgs = {
-  filters?: InputMaybe<NewsPostFiltersInput>;
+export type QueryPostsArgs = {
+  filters?: InputMaybe<PostFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   publicationState?: InputMaybe<PublicationState>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
@@ -828,76 +922,66 @@ export type UsersPermissionsUserRelationResponseCollection = {
   data: Array<UsersPermissionsUserEntity>;
 };
 
-export type ArticleQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['ID']>;
+export type PostBySlugQueryVariables = Exact<{
+  slug: Scalars['String'];
+  state: PublicationState;
 }>;
 
-export type ArticleQuery = {
+export type PostBySlugQuery = {
   __typename?: 'Query';
-  newsPost?:
+  posts?:
     | {
-        __typename?: 'NewsPostEntityResponse';
-        data?:
-          | {
-              __typename?: 'NewsPostEntity';
-              id?: string | null | undefined;
-              attributes?:
-                | {
-                    __typename?: 'NewsPost';
-                    title?: string | null | undefined;
-                    slug: string;
-                    text: string;
-                    date: any;
-                    image: {
-                      __typename?: 'UploadFileEntityResponse';
+        __typename?: 'PostEntityResponseCollection';
+        data: Array<{
+          __typename?: 'PostEntity';
+          id?: string | null | undefined;
+          attributes?:
+            | {
+                __typename?: 'Post';
+                slug: string;
+                title: string;
+                date?: any | null | undefined;
+                content: string;
+                excerpt: string;
+                author?:
+                  | {
+                      __typename?: 'AuthorEntityResponse';
                       data?:
                         | {
-                            __typename?: 'UploadFileEntity';
+                            __typename?: 'AuthorEntity';
                             attributes?:
                               | {
-                                  __typename?: 'UploadFile';
-                                  formats?: any | null | undefined;
-                                  width?: number | null | undefined;
-                                  height?: number | null | undefined;
+                                  __typename?: 'Author';
+                                  name: string;
+                                  avatar: {
+                                    __typename?: 'UploadFileEntityResponse';
+                                    data?:
+                                      | {
+                                          __typename?: 'UploadFileEntity';
+                                          attributes?:
+                                            | {
+                                                __typename?: 'UploadFile';
+                                                formats?:
+                                                  | any
+                                                  | null
+                                                  | undefined;
+                                              }
+                                            | null
+                                            | undefined;
+                                        }
+                                      | null
+                                      | undefined;
+                                  };
                                 }
                               | null
                               | undefined;
                           }
                         | null
                         | undefined;
-                    };
-                  }
-                | null
-                | undefined;
-            }
-          | null
-          | undefined;
-      }
-    | null
-    | undefined;
-};
-
-export type ArticleBySlugQueryVariables = Exact<{
-  slug: Scalars['String'];
-  state: PublicationState;
-}>;
-
-export type ArticleBySlugQuery = {
-  __typename?: 'Query';
-  newsPosts?:
-    | {
-        __typename?: 'NewsPostEntityResponseCollection';
-        data: Array<{
-          __typename?: 'NewsPostEntity';
-          id?: string | null | undefined;
-          attributes?:
-            | {
-                __typename?: 'NewsPost';
-                slug: string;
-                title?: string | null | undefined;
-                date: any;
-                text: string;
-                image: {
+                    }
+                  | null
+                  | undefined;
+                cover: {
                   __typename?: 'UploadFileEntityResponse';
                   data?:
                     | {
@@ -905,8 +989,6 @@ export type ArticleBySlugQuery = {
                         attributes?:
                           | {
                               __typename?: 'UploadFile';
-                              width?: number | null | undefined;
-                              height?: number | null | undefined;
                               formats?: any | null | undefined;
                             }
                           | null
@@ -924,60 +1006,31 @@ export type ArticleBySlugQuery = {
     | undefined;
 };
 
-export type ArticlePreviewBySlugQueryVariables = Exact<{
-  slug: Scalars['String'];
-  state: PublicationState;
-}>;
-
-export type ArticlePreviewBySlugQuery = {
-  __typename?: 'Query';
-  newsPosts?:
-    | {
-        __typename?: 'NewsPostEntityResponseCollection';
-        data: Array<{
-          __typename?: 'NewsPostEntity';
-          id?: string | null | undefined;
-          attributes?:
-            | { __typename?: 'NewsPost'; slug: string }
-            | null
-            | undefined;
-        }>;
-      }
-    | null
-    | undefined;
-};
-
-export type NewsPostsQueryVariables = Exact<{
+export type PostsPaginatedQueryVariables = Exact<{
   limit: Scalars['Int'];
   start: Scalars['Int'];
 }>;
 
-export type NewsPostsQuery = {
+export type PostsPaginatedQuery = {
   __typename?: 'Query';
-  newsPosts?:
+  posts?:
     | {
-        __typename?: 'NewsPostEntityResponseCollection';
+        __typename?: 'PostEntityResponseCollection';
         meta: {
           __typename?: 'ResponseCollectionMeta';
-          pagination: {
-            __typename?: 'Pagination';
-            total: number;
-            page: number;
-            pageSize: number;
-            pageCount: number;
-          };
+          pagination: { __typename?: 'Pagination'; total: number };
         };
         data: Array<{
-          __typename?: 'NewsPostEntity';
+          __typename?: 'PostEntity';
           id?: string | null | undefined;
           attributes?:
             | {
-                __typename?: 'NewsPost';
+                __typename?: 'Post';
+                title: string;
                 slug: string;
-                title?: string | null | undefined;
-                date: any;
-                text: string;
-                image: {
+                date?: any | null | undefined;
+                excerpt: string;
+                cover: {
                   __typename?: 'UploadFileEntityResponse';
                   data?:
                     | {
@@ -985,8 +1038,6 @@ export type NewsPostsQuery = {
                         attributes?:
                           | {
                               __typename?: 'UploadFile';
-                              width?: number | null | undefined;
-                              height?: number | null | undefined;
                               formats?: any | null | undefined;
                             }
                           | null
@@ -995,6 +1046,44 @@ export type NewsPostsQuery = {
                     | null
                     | undefined;
                 };
+                author?:
+                  | {
+                      __typename?: 'AuthorEntityResponse';
+                      data?:
+                        | {
+                            __typename?: 'AuthorEntity';
+                            attributes?:
+                              | {
+                                  __typename?: 'Author';
+                                  name: string;
+                                  avatar: {
+                                    __typename?: 'UploadFileEntityResponse';
+                                    data?:
+                                      | {
+                                          __typename?: 'UploadFileEntity';
+                                          attributes?:
+                                            | {
+                                                __typename?: 'UploadFile';
+                                                formats?:
+                                                  | any
+                                                  | null
+                                                  | undefined;
+                                              }
+                                            | null
+                                            | undefined;
+                                        }
+                                      | null
+                                      | undefined;
+                                  };
+                                }
+                              | null
+                              | undefined;
+                          }
+                        | null
+                        | undefined;
+                    }
+                  | null
+                  | undefined;
               }
             | null
             | undefined;
@@ -1004,22 +1093,73 @@ export type NewsPostsQuery = {
     | undefined;
 };
 
-export const ArticleDocument = `
-    query Article($id: ID) {
-  newsPost(id: $id) {
+export type PostsWithSlugQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  start: Scalars['Int'];
+}>;
+
+export type PostsWithSlugQuery = {
+  __typename?: 'Query';
+  posts?:
+    | {
+        __typename?: 'PostEntityResponseCollection';
+        data: Array<{
+          __typename?: 'PostEntity';
+          attributes?: { __typename?: 'Post'; slug: string } | null | undefined;
+        }>;
+      }
+    | null
+    | undefined;
+};
+
+export type VerifyIfPostExistsQueryVariables = Exact<{
+  slug: Scalars['String'];
+  state: PublicationState;
+}>;
+
+export type VerifyIfPostExistsQuery = {
+  __typename?: 'Query';
+  posts?:
+    | {
+        __typename?: 'PostEntityResponseCollection';
+        data: Array<{
+          __typename?: 'PostEntity';
+          attributes?: { __typename?: 'Post'; slug: string } | null | undefined;
+        }>;
+      }
+    | null
+    | undefined;
+};
+
+export const PostBySlugDocument = `
+    query PostBySlug($slug: String!, $state: PublicationState!) {
+  posts(filters: {slug: {eq: $slug}}, publicationState: $state) {
     data {
       id
       attributes {
-        title
         slug
-        text
+        title
         date
-        image {
+        content
+        excerpt
+        author {
+          data {
+            attributes {
+              name
+              avatar {
+                data {
+                  attributes {
+                    formats
+                  }
+                }
+              }
+            }
+          }
+        }
+        cover {
           data {
             attributes {
               formats
-              width
-              height
             }
           }
         }
@@ -1028,69 +1168,64 @@ export const ArticleDocument = `
   }
 }
     `;
-export const ArticleBySlugDocument = `
-    query ArticleBySlug($slug: String!, $state: PublicationState!) {
-  newsPosts(filters: {slug: {eq: $slug}}, publicationState: $state) {
-    data {
-      id
-      attributes {
-        slug
-        title
-        date
-        text
-        image {
-          data {
-            attributes {
-              width
-              height
-              formats
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export const ArticlePreviewBySlugDocument = `
-    query ArticlePreviewBySlug($slug: String!, $state: PublicationState!) {
-  newsPosts(filters: {slug: {eq: $slug}}, publicationState: $state) {
-    data {
-      id
-      attributes {
-        slug
-      }
-    }
-  }
-}
-    `;
-export const NewsPostsDocument = `
-    query NewsPosts($limit: Int!, $start: Int!) {
-  newsPosts(pagination: {limit: $limit, start: $start}) {
+export const PostsPaginatedDocument = `
+    query PostsPaginated($limit: Int!, $start: Int!) {
+  posts(pagination: {limit: $limit, start: $start}) {
     meta {
       pagination {
         total
-        page
-        pageSize
-        pageCount
       }
     }
     data {
       id
       attributes {
-        slug
         title
+        slug
         date
-        text
-        image {
+        excerpt
+        cover {
           data {
             attributes {
-              width
-              height
               formats
             }
           }
         }
+        author {
+          data {
+            attributes {
+              name
+              avatar {
+                data {
+                  attributes {
+                    formats
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const PostsWithSlugDocument = `
+    query PostsWithSlug($limit: Int!, $start: Int!) {
+  posts(pagination: {limit: $limit, start: $start}) {
+    data {
+      attributes {
+        slug
+      }
+    }
+  }
+}
+    `;
+export const VerifyIfPostExistsDocument = `
+    query VerifyIfPostExists($slug: String!, $state: PublicationState!) {
+  posts(filters: {slug: {eq: $slug}}, publicationState: $state) {
+    data {
+      attributes {
+        slug
       }
     }
   }
@@ -1100,37 +1235,40 @@ export const NewsPostsDocument = `
 const injectedRtkApi = api.injectEndpoints({
   overrideExisting: module.hot?.status() === 'apply',
   endpoints: (build) => ({
-    Article: build.query<ArticleQuery, ArticleQueryVariables | void>({
-      query: (variables) => ({ document: ArticleDocument, variables }),
+    PostBySlug: build.query<PostBySlugQuery, PostBySlugQueryVariables>({
+      query: (variables) => ({ document: PostBySlugDocument, variables }),
     }),
-    ArticleBySlug: build.query<ArticleBySlugQuery, ArticleBySlugQueryVariables>(
+    PostsPaginated: build.query<
+      PostsPaginatedQuery,
+      PostsPaginatedQueryVariables
+    >({
+      query: (variables) => ({ document: PostsPaginatedDocument, variables }),
+    }),
+    PostsWithSlug: build.query<PostsWithSlugQuery, PostsWithSlugQueryVariables>(
       {
-        query: (variables) => ({ document: ArticleBySlugDocument, variables }),
+        query: (variables) => ({ document: PostsWithSlugDocument, variables }),
       }
     ),
-    ArticlePreviewBySlug: build.query<
-      ArticlePreviewBySlugQuery,
-      ArticlePreviewBySlugQueryVariables
+    VerifyIfPostExists: build.query<
+      VerifyIfPostExistsQuery,
+      VerifyIfPostExistsQueryVariables
     >({
       query: (variables) => ({
-        document: ArticlePreviewBySlugDocument,
+        document: VerifyIfPostExistsDocument,
         variables,
       }),
-    }),
-    NewsPosts: build.query<NewsPostsQuery, NewsPostsQueryVariables>({
-      query: (variables) => ({ document: NewsPostsDocument, variables }),
     }),
   }),
 });
 
 export { injectedRtkApi as api };
 export const {
-  useArticleQuery,
-  useLazyArticleQuery,
-  useArticleBySlugQuery,
-  useLazyArticleBySlugQuery,
-  useArticlePreviewBySlugQuery,
-  useLazyArticlePreviewBySlugQuery,
-  useNewsPostsQuery,
-  useLazyNewsPostsQuery,
+  usePostBySlugQuery,
+  useLazyPostBySlugQuery,
+  usePostsPaginatedQuery,
+  useLazyPostsPaginatedQuery,
+  usePostsWithSlugQuery,
+  useLazyPostsWithSlugQuery,
+  useVerifyIfPostExistsQuery,
+  useLazyVerifyIfPostExistsQuery,
 } = injectedRtkApi;

@@ -4,20 +4,35 @@
  * @ Time: 23:14
  */
 
-import {
-  ArticleBySlugQuery,
-  NewsPostEntity,
-  NewsPostsQuery,
-} from '@/generated';
+import { PostBySlugQuery, PostEntity, PostsPaginatedQuery } from '@/generated';
 
 import { ImageFormats, ParsedPost } from '@/types';
 
-export function parsePost({ id, attributes }: NewsPostEntity): ParsedPost {
-  const image: ImageFormats = {
-    large: attributes?.image.data?.attributes?.formats['large'] || null,
-    medium: attributes?.image.data?.attributes?.formats['large'] || null,
-    small: attributes?.image.data?.attributes?.formats['large'] || null,
-    thumbnail: attributes?.image.data?.attributes?.formats['large'] || null,
+export function parsePost({ id, attributes }: PostEntity): ParsedPost {
+  const cover: ImageFormats = {
+    large: attributes?.cover.data?.attributes?.formats['large'] || null,
+    medium: attributes?.cover.data?.attributes?.formats['medium'] || null,
+    small: attributes?.cover.data?.attributes?.formats['small'] || null,
+    thumbnail: attributes?.cover.data?.attributes?.formats['thumbnail'] || null,
+  };
+
+  const avatar: ImageFormats = {
+    large:
+      attributes?.author?.data?.attributes?.avatar.data?.attributes?.formats[
+        'large'
+      ] || null,
+    medium:
+      attributes?.author?.data?.attributes?.avatar.data?.attributes?.formats[
+        'medium'
+      ] || null,
+    small:
+      attributes?.author?.data?.attributes?.avatar.data?.attributes?.formats[
+        'small'
+      ] || null,
+    thumbnail:
+      attributes?.author?.data?.attributes?.avatar.data?.attributes?.formats[
+        'thumbnail'
+      ] || null,
   };
 
   return {
@@ -25,17 +40,22 @@ export function parsePost({ id, attributes }: NewsPostEntity): ParsedPost {
     date: attributes?.date || null,
     slug: attributes?.slug || null,
     title: attributes?.slug || null,
-    text: attributes?.text || null,
-    image,
+    content: attributes?.content || null,
+    cover,
+    excerpt: attributes?.excerpt || null,
+    author: {
+      avatar,
+      name: attributes?.author?.data?.attributes?.name || null,
+    },
   };
 }
 
 export function parsePosts(
-  posts: ArticleBySlugQuery | NewsPostsQuery | undefined
+  postsData: PostBySlugQuery | PostsPaginatedQuery | undefined
 ): ParsedPost[] {
-  if (posts?.newsPosts?.data && posts?.newsPosts?.data.length) {
-    const postsData = posts?.newsPosts?.data as Array<NewsPostEntity>;
-    return postsData.map((post) => parsePost(post));
+  if (postsData?.posts?.data && postsData?.posts?.data.length) {
+    const posts = postsData?.posts?.data as Array<PostEntity>;
+    return posts.map((post) => parsePost(post));
   }
 
   return [];

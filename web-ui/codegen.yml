@@ -1,4 +1,4 @@
-overwrite: true
+overwrite: false
 schema: 'http://localhost:1337/graphql'
 documents: 'src/**/*.graphql'
 generates:
@@ -14,3 +14,7 @@ generates:
   ./graphql.schema.json:
     plugins:
       - 'introspection'
+hooks:
+  afterOneFileWrite:
+    - eslint --fix
+    - prettier --write

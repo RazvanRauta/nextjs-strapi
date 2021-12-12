@@ -6,7 +6,7 @@ module.exports = {
       extensions: {
         endpoints: {
           default: {
-            url: 'https://rr-strapi.herokuapp.com/graphql',
+            url: 'http://localhost:1337/graphql',
             headers: {
               'user-agent': 'JS GraphQL',
             },

@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "setup:yarn": "yarn && concurrently setup:yarn:*",
-    "setup:yarn:backend": "cd backend && yarn",
-    "setup:yarn:frontend": "cd web-ui && yarn",
-    "develop:yarn": "yarn concurrently develop:yarn:*",
-    "develop:yarn:backend": "cd backend && yarn develop",
-    "develop:yarn:frontend": "cd web-ui && yarn develop",
+    "setup:yarn": "yarn && concurrently 'yarn:setup-*'",
+    "setup-yarn-backend": "cd backend && yarn",
+    "setup-yarn-frontend": "cd web-ui && yarn",
+    "develop:yarn": "concurrently 'yarn:develop-*'",
+    "develop-yarn-backend": "cd backend && yarn develop",
+    "develop-yarn-frontend": "cd web-ui && yarn dev",
     "build:yarn": "cd web-ui && yarn build"
   },
   "devDependencies": {

@@ -15,6 +15,7 @@ export const makeStore = () =>
       [api.reducerPath]: api.reducer,
     },
     middleware: (gDM) => gDM().concat(api.middleware),
+    devTools: process.env.NODE_ENV !== 'production',
   });
 
 export type AppStore = ReturnType<typeof makeStore>;

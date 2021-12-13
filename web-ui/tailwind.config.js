@@ -12,7 +12,7 @@ function withOpacity(variableName) {
 
 /** @type {import("@types/tailwindcss/tailwind-config").TailwindConfig } */
 module.exports = {
-  darkMode: 'media',
+  darkMode: 'class',
   content: [
     './src/pages/**/*.{js,jsx,ts,tsx}',
     './src/components/**/*.{js,jsx,ts,tsx}',
@@ -54,6 +54,7 @@ module.exports = {
       },
       animation: {
         flicker: 'flicker 3s linear infinite',
+        'spin-slow': 'spin 15s linear infinite',
       },
     },
   },

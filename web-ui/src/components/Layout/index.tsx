@@ -1,6 +1,12 @@
-import * as React from 'react';
+/**
+ *  @author: Razvan Rauta
+ *  Date: Dec 10 2021
+ *  Time: 01:55
+ */
 
 import AlertPreview from '../AlertPreview';
+import Footer from '../Footer';
+import Header from '../Header';
 
 export default function Layout({
   children,
@@ -11,9 +17,11 @@ export default function Layout({
 }) {
   // Put Header or Footer Here
   return (
-    <div className='pt-2'>
+    <>
       {preview && <AlertPreview />}
+      <Header />
       {children}
-    </div>
+      <Footer />
+    </>
   );
 }

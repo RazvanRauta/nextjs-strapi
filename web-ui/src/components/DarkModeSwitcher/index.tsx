@@ -15,15 +15,20 @@ import { useEffect, useState } from 'react';
 export default function DarkModeSwitcher(): ReactElement {
   const [isMounted, setIsMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [toggleClass, setToggleClass] = useState({ toggle: '', switch: '' });
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-    if (
-      typeof window !== 'undefined' &&
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
-      if (!localStorage.getItem('theme')) setTheme('dark');
+    if (typeof window !== 'undefined') {
+      if (
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+      ) {
+        if (!localStorage.getItem('theme')) setTheme('dark');
+      } else {
+        if (!localStorage.getItem('theme')) setTheme('light');
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -34,32 +39,43 @@ export default function DarkModeSwitcher(): ReactElement {
     }
   };
 
-  const isDarkMode = theme === 'dark';
+  useEffect(() => {
+    if (theme === 'dark') {
+      setToggleClass({
+        switch: 'translate-x-6 bg-white',
+        toggle: 'bg-blue-600',
+      });
+      setIsChecked(true);
+    } else {
+      setToggleClass({
+        switch: 'translate-x-0 bg-gray-900',
+        toggle: 'bg-gray-200',
+      });
+      setIsChecked(false);
+    }
+  }, [theme]);
 
   return (
-    <div className='flex justify-between items-center w-28 h-10'>
+    <div className='flex h-10 items-center justify-between w-28'>
       <SunIcon
-        className='w-10 h-10 text-yellow-400 dark:text-gray-500'
+        className='h-10 text-yellow-400 w-10 dark:text-gray-500'
         onClick={() => setTheme('light')}
       />
       <Switch
-        checked={isDarkMode}
+        checked={isChecked}
         onChange={switchTheme}
-        className={`${
-          theme === 'dark' ? 'bg-blue-600' : 'bg-gray-200'
-        } relative inline-flex items-center h-2 rounded-full w-11 mx-2`}
+        className={`${toggleClass.toggle} relative inline-flex items-center h-2 rounded-full w-11 mx-2`}
       >
         <span className='sr-only'>Toggle DarkMode</span>
         <span
           className={clsx(
-            isDarkMode && 'translate-x-6 bg-white',
-            !isDarkMode && 'translate-x-0 bg-gray-900',
-            'inline-block w-4 h-4 rounded-full duration-300 transform'
+            toggleClass.switch,
+            'duration-300 h-4 inline-block rounded-full transform w-4'
           )}
         />
       </Switch>
       <MoonIcon
-        className='w-9 h-9 text-gray-500 dark:text-cyan-700'
+        className='h-9 text-gray-500 w-9 dark:text-cyan-700'
         onClick={() => setTheme('dark')}
       />
     </div>

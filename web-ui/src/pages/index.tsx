@@ -36,8 +36,8 @@ export default function IndexPage({ preview }: IndexPageProps): ReactElement {
 
   if (isLoading)
     return (
-      <div className='flex flex-col justify-center items-center w-screen h-screen'>
-        <div className='w-20 h-20 rounded-full border-t-4 border-b-4 border-green-900 animate-spin'></div>
+      <div className='flex flex-col h-screen items-center justify-center w-screen'>
+        <div className='animate-spin border-b-4 border-green-900 border-t-4 h-20 rounded-full w-20'></div>
         <p className='mt-4'>Loading...</p>
       </div>
     );
@@ -50,14 +50,14 @@ export default function IndexPage({ preview }: IndexPageProps): ReactElement {
 
       <main className='p-3'>
         <section className=''>
-          <div className='layout flex flex-col justify-center items-center min-h-screen text-center'>
+          <div className='flex flex-col items-center justify-center layout min-h-screen text-center'>
             {parsedPosts && parsedPosts.length
               ? parsedPosts.map((post) => (
                   <section
                     key={post.id}
                     className='prose md:prose-xl dark:md:prose-xl-dark dark:prose-dark'
                   >
-                    <Link prefetch href={`post/${post.slug}`}>
+                    <Link href={`/post/${post.slug}`}>
                       <a className='no-underline'>
                         <h1>{post.title}</h1>
                       </a>
@@ -66,7 +66,7 @@ export default function IndexPage({ preview }: IndexPageProps): ReactElement {
                       <NextImage
                         useSkeleton
                         sizes=''
-                        className='relative max-w-md'
+                        className='max-w-md relative'
                         imgClassName='object-contain'
                         src={post.cover.medium?.url || ''}
                         width={post.cover.medium?.width || ''}
